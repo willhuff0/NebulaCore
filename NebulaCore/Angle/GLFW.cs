@@ -5,7 +5,7 @@ namespace NebulaCore.Angle;
 public static unsafe class Glfw
 {
 #if WINDOWS
-    private const string dll = "glfw3.dll"
+    private const string dll = "glfw3.dll";
 #else
     private const string dll = "libglfw.dylib";
 #endif

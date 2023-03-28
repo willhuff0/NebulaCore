@@ -4,13 +4,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NebulaCore", "NebulaCore\Ne
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Release-Win-x64|Any CPU = Release-Win-x64|Any CPU
+		Debug-Win-x64|Any CPU = Debug-Win-x64|Any CPU
+		Debug-Unix-arm64|Any CPU = Debug-Unix-arm64|Any CPU
+		Release-Unix-arm64|Any CPU = Release-Unix-arm64|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release-Win-x64|Any CPU.ActiveCfg = Release-Win-x64|Any CPU
+		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release-Win-x64|Any CPU.Build.0 = Release-Win-x64|Any CPU
+		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug-Win-x64|Any CPU.ActiveCfg = Debug-Win-x64|Any CPU
+		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug-Win-x64|Any CPU.Build.0 = Debug-Win-x64|Any CPU
+		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug-Unix-arm64|Any CPU
+		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug-Unix-arm64|Any CPU.Build.0 = Debug-Unix-arm64|Any CPU
+		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug-Win-x64|Any CPU
+		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release-Unix-arm64|Any CPU.Build.0 = Debug-Win-x64|Any CPU
 	EndGlobalSection
 EndGlobal

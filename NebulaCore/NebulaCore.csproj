@@ -6,12 +6,40 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Configurations>Release-Win-x64;Debug-Win-x64;Debug-Unix-arm64;Release-Unix-arm64</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug-Unix-arm64' ">
+      <DefineConstants>TRACE;UNIX</DefineConstants>
+      <PlatformTarget>ARM64</PlatformTarget>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug-Win-x64' ">
+      <DefineConstants>TRACE;WINDOWS</DefineConstants>
+      <PlatformTarget>x64</PlatformTarget>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release-Unix-arm64' ">
+      <DefineConstants>TRACE;UNIX</DefineConstants>
+      <PlatformTarget>ARM64</PlatformTarget>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release-Win-x64' ">
+      <DefineConstants>TRACE;WINDOWS</DefineConstants>
+      <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
       <None Include="bin\Debug\net7.0\libEGL.dylib" />
       <None Include="bin\Debug\net7.0\libGLESv2.dylib" />
       <None Include="bin\Debug\net7.0\libglfw.dylib" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="bin\Debug-Win-x64\net7.0\glfw3.dll" />
+      <Content Include="bin\Debug-Win-x64\net7.0\libEGL.dll" />
+      <Content Include="bin\Debug-Win-x64\net7.0\libGLESv2.dll" />
     </ItemGroup>
 
 </Project>

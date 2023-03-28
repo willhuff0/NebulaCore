@@ -5,7 +5,7 @@ namespace NebulaCore.Angle;
 public static unsafe class GL
 {
 #if WINDOWS
-    private const string dll = "LibGLESv2.dll"
+    private const string dll = "LibGLESv2.dll";
 #else
     private const string dll = "LibGLESv2.dylib";
 #endif

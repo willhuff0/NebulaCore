@@ -44,7 +44,7 @@ public class Program
         GL.enable(GL.CULL_FACE);
         GL.cullFace(GL.BACK);
         
-        GL.clearColor(0.0f, 0.0f, 1.0f, 1.0f);
+        GL.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
         while (Glfw.windowShouldClose(window) == Glfw.FALSE)

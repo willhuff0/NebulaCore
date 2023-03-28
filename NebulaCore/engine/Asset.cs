@@ -8,12 +8,29 @@ public interface IAssetDefinition<TAsset, TRuntimeAsset>
     public static string name;
 }
 
-public abstract class Asset
+public interface IAsset<TRuntimeAsset>
+where TRuntimeAsset : IRuntimeAsset
+{
+    public Task<TRuntimeAsset?> load();
+}
+
+public interface IRuntimeAsset
+{
+    public Task unload();
+    public Task assignReferences();
+}
+
+public abstract class Asset : IAsset<IRuntimeAsset>
 {
     [JsonInclude] public string name;
     public Project project;
+    public abstract Task<IRuntimeAsset?> load();
+}
 
-    private Task<RuntimeAsset?> load(RuntimeAssetBundle partialRuntimeAssetBundle);
+public abstract class RuntimeAsset : IRuntimeAsset
+{
+    public abstract Task unload();
+    public abstract Task assignReferences();
 }
 
 public abstract class FileAsset : Asset
@@ -94,9 +111,4 @@ public abstract class FileOrMemoryAsset : Asset
             File.Delete(absPath);
         }
     }
-}
-
-public abstract class RuntimeAsset
-{
-    public abstract void unload();
 }

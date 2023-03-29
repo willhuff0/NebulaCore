@@ -1,45 +1,58 @@
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace NebulaCore.engine;
+namespace NebulaCore.Engine;
 
-public interface IAssetDefinition<TAsset, TRuntimeAsset>
+public interface IAssetDefinitions
 {
-    public static string name;
+    public static virtual (Type, Type) GetDefinition(string name)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+public class DefaultAssetDefinitions : IAssetDefinitions {
+    public static Dictionary<string, Type> GetDefinitions()
+    {
+        return new Dictionary<string, Type>()
+        {
+            //{ "shaders", typeof(TestShader) }
+        };
+    }
 }
 
 public interface IAsset<TRuntimeAsset>
 where TRuntimeAsset : IRuntimeAsset
 {
-    public Task<TRuntimeAsset?> load();
+    public Task<TRuntimeAsset?> Load();
 }
 
 public interface IRuntimeAsset
 {
-    public Task unload();
-    public Task assignReferences();
+    public Task Unload();
+    public Task AssignRuntimeReferences();
 }
 
 public abstract class Asset : IAsset<IRuntimeAsset>
 {
     [JsonInclude] public string name;
     public Project project;
-    public abstract Task<IRuntimeAsset?> load();
+    public abstract Task<IRuntimeAsset?> Load();
 }
 
 public abstract class RuntimeAsset : IRuntimeAsset
 {
-    public abstract Task unload();
-    public abstract Task assignReferences();
+    public abstract Task Unload();
+    public abstract Task AssignRuntimeReferences();
 }
 
 public abstract class FileAsset : Asset
 {
     [JsonInclude] public string path;
 
-    public byte[] getData() => File.ReadAllBytes(Path.Join(project.root, path));
+    public byte[] GetData() => File.ReadAllBytes(Path.Join(project.Root, path));
 
-    public void setData(byte[] newData) => File.WriteAllBytes(Path.Join(project.root, path), newData);
+    public void SetData(byte[] newData) => File.WriteAllBytes(Path.Join(project.Root, path), newData);
 }
 
 public abstract class DataAsset : Asset
@@ -66,10 +79,10 @@ public abstract class FileOrMemoryAsset : Asset
         set => data = value == null ? null : Encoding.UTF8.GetBytes(value);
     }
 
-    public byte[]? getData()
+    public byte[]? GetData()
     {
         if (data != null) return data;
-        if (path != null) return File.ReadAllBytes(Path.Join(project.root, path));
+        if (path != null) return File.ReadAllBytes(Path.Join(project.Root, path));
         return null;
     }
 
@@ -77,36 +90,36 @@ public abstract class FileOrMemoryAsset : Asset
     /// If path is not null, sets data to disk only, otherwise sets data to memory only
     /// </summary>
     /// <param name="newData"></param>
-    public void setData(byte[] newData)
+    public void SetData(byte[] newData)
     {
-        if (path != null) File.WriteAllBytes(Path.Join(project.root, path), newData);
+        if (path != null) File.WriteAllBytes(Path.Join(project.Root, path), newData);
         else data = newData;
     }
 
-    public void setDateToFile(byte[] newData, string? newPath = null)
+    public void SetFile(byte[] newData, string? newPath = null)
     {
         if (newPath != null) path = newPath;
         if (path == null) return;
-        File.WriteAllBytes(Path.Join(project.root, path), newData);
+        File.WriteAllBytes(Path.Join(project.Root, path), newData);
     }
 
     /// <summary>
     /// Writes memory to file then deletes memory
     /// </summary>
-    public void moveToFile()
+    public void MoveToFile()
     {
-        if (data != null) File.WriteAllBytes(Path.Join(project.root, path), data);
+        if (data != null) File.WriteAllBytes(Path.Join(project.Root, path), data);
         data = null;
     }
 
     /// <summary>
     /// Reads file to memory then deletes file
     /// </summary>
-    public void moveToMemory()
+    public void MoveToMemory()
     {
         if (path != null)
         {
-            var absPath = Path.Join(project.root, path);
+            var absPath = Path.Join(project.Root, path);
             data = File.ReadAllBytes(absPath);
             File.Delete(absPath);
         }

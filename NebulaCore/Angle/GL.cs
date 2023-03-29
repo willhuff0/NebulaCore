@@ -49,4 +49,7 @@ public static unsafe class GL
     
     [DllImport(dll, EntryPoint = "glCullFace")]
     public static extern void cullFace(uint mode);
+
+    [DllImport(dll, EntryPoint = "glViewport")]
+    public static extern void viewport(int x, int y, int width, int height);
 }

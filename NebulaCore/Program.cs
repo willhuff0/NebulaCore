@@ -2,14 +2,19 @@
 
 namespace NebulaCore;
 
-public class Program
+public unsafe class Program
 {
     private static void glfwErrorCallback(int error_code, string description)
     {
         Console.WriteLine($"GLFW error {error_code}: {description}");
     }
+
+    private static void glfwFramebufferSizeCallback(void* window, int width, int height)
+    {
+        GL.viewport(0, 0, width, height);
+    }
     
-    public static unsafe int Main(string[] args)
+    public static int Main(string[] args)
     {
         Glfw.initHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
         if (Glfw.init() == Glfw.FALSE)
@@ -34,12 +39,15 @@ public class Program
         }
         
         Glfw.makeContextCurrent(window);
+
+        Glfw.setFramebufferSizeCallback(window, glfwFramebufferSizeCallback);
         
         Console.WriteLine($"Nebula version: {"0.1.0"}");
         //Console.WriteLine($"GLFW version: {Glfw.getVersionString()}");
         Console.WriteLine($"GL version: {GL.getString(GL.VERSION)}");
         Console.WriteLine($"GL renderer: {GL.getString(GL.RENDERER)}");
         
+        GL.viewport(0, 0, 1024, 768);
         GL.enable(GL.DEPTH_TEST);
         GL.enable(GL.CULL_FACE);
         GL.cullFace(GL.BACK);

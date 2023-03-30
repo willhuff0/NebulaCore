@@ -1,30 +1,14 @@
 using System.Text;
-using System.Text.Json.Serialization;
+using System.Text.Json.Nodes;
 
 namespace NebulaCore.Engine;
-
-public interface IAssetDefinitions
-{
-    public static virtual (Type, Type) GetDefinition(string name)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-public class DefaultAssetDefinitions : IAssetDefinitions {
-    public static Dictionary<string, Type> GetDefinitions()
-    {
-        return new Dictionary<string, Type>()
-        {
-            //{ "shaders", typeof(TestShader) }
-        };
-    }
-}
 
 public interface IAsset<TRuntimeAsset>
 where TRuntimeAsset : IRuntimeAsset
 {
     public Task<TRuntimeAsset?> Load();
+
+    public JsonObject Serialize();
 }
 
 public interface IRuntimeAsset
@@ -35,54 +19,92 @@ public interface IRuntimeAsset
 
 public abstract class Asset : IAsset<IRuntimeAsset>
 {
-    [JsonInclude] public string name;
-    public Project project;
+    protected Project Project;
+    public string name;
     public abstract Task<IRuntimeAsset?> Load();
+    public abstract JsonObject Serialize();
+
+    protected Asset(Project project, JsonNode json)
+    {
+        this.Project = project;
+        name = json["name"].GetValue<string>();
+    }
 }
 
 public abstract class RuntimeAsset : IRuntimeAsset
 {
+    public virtual Task AssignRuntimeReferences() => Task.CompletedTask;
+    
     public abstract Task Unload();
-    public abstract Task AssignRuntimeReferences();
 }
 
 public abstract class FileAsset : Asset
 {
-    [JsonInclude] public string path;
+    protected string path;
 
-    public byte[] GetData() => File.ReadAllBytes(Path.Join(project.Root, path));
+    protected FileAsset(Project project, JsonNode json) : base(project, json)
+    {
+        path = json["path"].GetValue<string>();
+    }
 
-    public void SetData(byte[] newData) => File.WriteAllBytes(Path.Join(project.Root, path), newData);
+    public override JsonObject Serialize() => new JsonObject()
+    {
+        { "path", path }
+    };
+
+    protected byte[] GetData() => File.ReadAllBytes(Path.Join(Project.Root, path));
+
+    protected void SetData(byte[] newData) => File.WriteAllBytes(Path.Join(Project.Root, path), newData);
+
+    protected string GetDataAsString() => File.ReadAllText(Path.Join(Project.Root, path));
+
+    protected void SetDataAsString(string newData) => File.WriteAllText(Path.Join(Project.Root, path), newData);
 }
 
-public abstract class DataAsset : Asset
+public abstract class MemoryAsset : Asset
 {
-    public byte[] data;
-
-    [JsonInclude]
-    public string base64
+    protected byte[] data;
+    
+    protected MemoryAsset(Project project, JsonNode json) : base(project, json)
     {
-        get => Encoding.UTF8.GetString(data);
-        set => data = Encoding.UTF8.GetBytes(value);
+        data = Convert.FromBase64String(json["data"].GetValue<string>());
     }
+
+    public override JsonObject Serialize() => new JsonObject()
+    {
+        { "data", Convert.ToBase64String(data) }
+    };
+
+    protected string GetDataAsString() => Encoding.UTF8.GetString(data);
+
+    protected void SetDataAsString(string newData) => Encoding.UTF8.GetBytes(newData);
 }
 
 public abstract class FileOrMemoryAsset : Asset
 {
-    public byte[]? data;
-    [JsonInclude] public string? path;
+    protected byte[]? data;
+    protected string? path;
 
-    [JsonInclude]
-    public string? base64
+    protected FileOrMemoryAsset(Project project, JsonNode json) : base(project, json)
     {
-        get => data == null ? null : Encoding.UTF8.GetString(data);
-        set => data = value == null ? null : Encoding.UTF8.GetBytes(value);
+        var _data = json["data"]?.GetValue<string>();
+        if (_data != null) data = Convert.FromBase64String(_data);
+
+        path = json["path"]?.GetValue<string>();
     }
 
-    public byte[]? GetData()
+    public override JsonObject Serialize()
+    {
+        var json = new JsonObject();
+        if (data != null) json["data"] = JsonValue.Create(data);
+        if (path != null) json["path"] = JsonValue.Create(path);
+        return json;
+    }
+
+    protected byte[]? GetData()
     {
         if (data != null) return data;
-        if (path != null) return File.ReadAllBytes(Path.Join(project.Root, path));
+        if (path != null) return File.ReadAllBytes(Path.Join(Project.Root, path));
         return null;
     }
 
@@ -90,36 +112,36 @@ public abstract class FileOrMemoryAsset : Asset
     /// If path is not null, sets data to disk only, otherwise sets data to memory only
     /// </summary>
     /// <param name="newData"></param>
-    public void SetData(byte[] newData)
+    protected void SetData(byte[] newData)
     {
-        if (path != null) File.WriteAllBytes(Path.Join(project.Root, path), newData);
+        if (path != null) File.WriteAllBytes(Path.Join(Project.Root, path), newData);
         else data = newData;
     }
 
-    public void SetFile(byte[] newData, string? newPath = null)
+    protected void SetFile(byte[] newData, string? newPath = null)
     {
         if (newPath != null) path = newPath;
         if (path == null) return;
-        File.WriteAllBytes(Path.Join(project.Root, path), newData);
+        File.WriteAllBytes(Path.Join(Project.Root, path), newData);
     }
 
     /// <summary>
     /// Writes memory to file then deletes memory
     /// </summary>
-    public void MoveToFile()
+    protected void MoveToFile()
     {
-        if (data != null) File.WriteAllBytes(Path.Join(project.Root, path), data);
+        if (data != null) File.WriteAllBytes(Path.Join(Project.Root, path), data);
         data = null;
     }
 
     /// <summary>
     /// Reads file to memory then deletes file
     /// </summary>
-    public void MoveToMemory()
+    protected void MoveToMemory()
     {
         if (path != null)
         {
-            var absPath = Path.Join(project.Root, path);
+            var absPath = Path.Join(Project.Root, path);
             data = File.ReadAllBytes(absPath);
             File.Delete(absPath);
         }

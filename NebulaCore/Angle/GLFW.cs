@@ -2,6 +2,8 @@ using System.Runtime.InteropServices;
 
 namespace NebulaCore.Angle;
 
+using GLFWwindow = Void;
+
 public static unsafe class Glfw
 {
 #if WINDOWS
@@ -12,7 +14,7 @@ public static unsafe class Glfw
 
     public delegate void GLFWerrorfun(int error_code, string description);
 
-    public delegate void GLFWframebuffersizefun(void* window, int width, int height);
+    public delegate void GLFWframebuffersizefun(GLFWwindow* window, int width, int height);
     
     public const int TRUE = 1;
     public const int FALSE = 0;
@@ -59,7 +61,7 @@ public static unsafe class Glfw
     public static extern GLFWerrorfun setErrorCallback(GLFWerrorfun callback);
 
     [DllImport(dll, EntryPoint = "glfwMakeContextCurrent")]
-    public static extern void makeContextCurrent(void* window);
+    public static extern void makeContextCurrent(GLFWwindow* window);
 
     [DllImport(dll, EntryPoint = "glfwSetFramebufferSizeCallback")]
     public static extern GLFWframebuffersizefun setFramebufferSizeCallback(void* window, GLFWframebuffersizefun callback);
@@ -68,17 +70,17 @@ public static unsafe class Glfw
     public static extern void windowHint(int hint, int value);
     
     [DllImport(dll, EntryPoint = "glfwCreateWindow")]
-    public static extern void* createWindow(int width, int height, string title, void* monitor, void* share);
+    public static extern GLFWwindow* createWindow(int width, int height, string title, void* monitor, GLFWwindow* share);
         
     [DllImport(dll, EntryPoint = "glfwWindowShouldClose")]
-    public static extern int windowShouldClose(void* window);
+    public static extern int windowShouldClose(GLFWwindow* window);
 
     [DllImport(dll, EntryPoint = "glfwPollEvents")]
     public static extern void pollEvents();
 
     [DllImport(dll, EntryPoint = "glfwSwapBuffers")]
-    public static extern void swapBuffers(void* window);
+    public static extern void swapBuffers(GLFWwindow* window);
 
     [DllImport(dll, EntryPoint = "glfwDestroyWindow")]
-    public static extern void destroyWindow(void* window);
+    public static extern void destroyWindow(GLFWwindow* window);
 }

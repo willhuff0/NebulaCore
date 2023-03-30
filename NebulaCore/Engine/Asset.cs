@@ -20,28 +20,30 @@ public abstract class Asset
 {
     protected Project Project;
     public string name;
-    public abstract Task<RuntimeAsset?> Load();
-    public abstract JsonObject Serialize();
 
     protected Asset(Project project, JsonNode json)
     {
         Project = project;
         name = json["name"].GetValue<string>();
     }
+    
+    public abstract JsonObject Serialize();
+    
+    public abstract Task<RuntimeAsset?> Load();
 }
 
 public abstract class RuntimeAsset
 {
     protected Project Project;
     
-    public virtual Task AssignRuntimeReferences() => Task.CompletedTask;
-    
-    public abstract Task Unload();
-
     protected RuntimeAsset(Project project)
     {
         Project = project;
     }
+    
+    public virtual Task AssignRuntimeReferences() => Task.CompletedTask;
+    
+    public abstract Task Unload();
 }
 
 public abstract class FileAsset : Asset

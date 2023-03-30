@@ -139,7 +139,7 @@ public class RuntimeRenderShader : RuntimeAsset
         return Task.CompletedTask;
     }
 
-    public void Use() => GL.UseProgram(_program);
+    public void Bind() => GL.UseProgram(_program);
     
     public void SetUniform(string name, float value) => GL.ProgramUniform(_program, _uniformLocations[name], value);
     public void SetUniform(string name, Vector2 value) => GL.ProgramUniform(_program, _uniformLocations[name], value.X, value.Y);
@@ -149,5 +149,68 @@ public class RuntimeRenderShader : RuntimeAsset
     public void SetUniform(string name, int v0, int v1) => GL.ProgramUniform(_program, _uniformLocations[name], v0, v1);
     public void SetUniform(string name, int v0, int v1, int v2) => GL.ProgramUniform(_program, _uniformLocations[name], v0, v1, v2);
     public void SetUniform(string name, int v0, int v1, int v2, int v3) => GL.ProgramUniform(_program, _uniformLocations[name], v0, v1, v2, v3);
+    public void SetUniform(string name, bool value) => GL.ProgramUniform(_program, _uniformLocations[name], value ? 1 : 0);
     public void SetUniform(string name, Matrix4x4 value) => GL.ProgramUniformMatrix4(_program, _uniformLocations[name], 1, false, new []{ value.M11, value.M21, value.M31, value.M41, value.M12, value.M22, value.M32, value.M42, value.M13, value.M23, value.M33, value.M43, value.M14, value.M24, value.M34, value.M44 });
+
+    public void SetUniform(string name, object value)
+    {
+        switch (value)
+        {
+            case int val: 
+                SetUniform(name, val);
+                break;
+            case bool val:
+                SetUniform(name, val);
+                break;
+            case float val:
+                SetUniform(name, val);
+                break;
+            case Vector2 val:
+                SetUniform(name, val);
+                break;
+            case Vector3 val:
+                SetUniform(name, val);
+                break;
+            case Vector4 val:
+                SetUniform(name, val);
+                break;
+            case int[] val:
+                switch (val.Length)
+                {
+                    case 1:
+                        SetUniform(name, val[0]);
+                        break;
+                    case 2:
+                        SetUniform(name, val[0], val[1]);
+                        break;
+                    case 3:
+                        SetUniform(name, val[0], val[1], val[2]);
+                        break;
+                    case 4:
+                        SetUniform(name, val[0], val[1], val[2], val[3]);
+                        break;
+                }
+                break;
+            case float[] val:
+                switch (val.Length)
+                {
+                    case 1:
+                        SetUniform(name, val[0]);
+                        break;
+                    case 2:
+                        SetUniform(name, new Vector2(val[0], val[1]));
+                        break;
+                    case 3:
+                        SetUniform(name, new Vector3(val[0], val[1], val[2]));
+                        break;
+                    case 4:
+                        SetUniform(name, new Vector4(val[0], val[1], val[2], val[3]));
+                        break;
+                    case 16:
+                        SetUniform(name, new Matrix4x4(val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7], val[8], val[9], val[10], val[11], val[12], val[13], val[14], val[15]));
+                        break;
+                }
+                break;
+        }
+    }
 }

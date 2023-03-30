@@ -251,11 +251,17 @@ public static partial class GL
     public static partial void ProgramUniformMatrix4(GLuint program, GLint location, GLsizei count, bool transpose, float[] value);
 
     [LibraryImport(dll, EntryPoint = "glGenTextures")]
-    public static partial void GenShaders(GLsizei n, out uint[] textures);
+    public static partial void GenTextures(GLsizei n, out uint[] textures);
 
     [LibraryImport(dll, EntryPoint = "glActiveTexture")]
     public static partial void ActiveTexture(GLenum texture);
 
+    [LibraryImport(dll, EntryPoint = "glBindTexture")]
+    public static partial void BindTexture(GLenum target, GLuint texture);
+
+    [LibraryImport(dll, EntryPoint = "glTexImage2D")]
+    public static partial void TexImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, ref dynamic data);
+    
     [LibraryImport(dll, EntryPoint = "glTexParameter")]
     public static partial void TexParameter(GLenum target, GLenum pname, GLfloat param);
 
@@ -268,11 +274,9 @@ public static partial class GL
     [LibraryImport(dll, EntryPoint = "glTexParameter")]
     public static partial void TexParameter(GLenum target, GLenum pname, GLint[] _params);
 
+    [LibraryImport(dll, EntryPoint = "glGenerateMipmap")]
+    public static partial void GenerateMipmap(GLenum target);
+    
     [LibraryImport(dll, EntryPoint = "glDeleteTextures")]
     public static partial void DeleteTextures(GLsizei n, GLuint[] textures);
-
-    [LibraryImport(dll, EntryPoint = "glTexImage2D")]
-    public static partial void TexImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, ref Object data);
-    
-    
 }

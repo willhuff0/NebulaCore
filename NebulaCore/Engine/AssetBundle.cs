@@ -1,14 +1,56 @@
-using System.Text.Json;
+using System.Reflection;
 using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace NebulaCore.Engine;
 
-public class AssetBundle<TAssetDefinitions>
-    where TAssetDefinitions : IAssetDefinitions
+public class AssetBundle
 {
-    private Dictionary<string, AssetGroup<IAsset<IRuntimeAsset>, IRuntimeAsset>> _assetGroups;
+    private Project _project;
+    private Dictionary<string, AssetGroup> _assetGroups;
 
+    public AssetBundle(Project project, JsonObject json)
+    {
+        _project = project;
+        _assetGroups = new Dictionary<string, AssetGroup>();
+        ReloadAssetDefinitions();
+        ImportAssets(json);
+    }
+
+    public JsonObject Serialize()
+    {
+        var json = new JsonObject();
+        var groups = json["groups"] = new JsonObject();
+        foreach (var assetGroup in _assetGroups)
+        {
+            groups[assetGroup.Key] = assetGroup.Value.Serialize();
+        }
+
+        return json;
+    }
+    
+    public void ReloadAssetDefinitions()
+    {
+        foreach (var type in Assembly.GetCallingAssembly().GetTypes())
+        {
+            var assetDefinitionAttribute = type.GetCustomAttribute<AssetDefinitionAttribute>(false);
+            if (assetDefinitionAttribute != null)
+            {
+                var constructor = type.GetConstructor(new[] { typeof(Project), typeof(JsonNode) });
+                if (constructor != null)
+                {
+                    if (!_assetGroups.TryGetValue(assetDefinitionAttribute.groupName, out var assetGroup))
+                    {
+                         _assetGroups[assetDefinitionAttribute.groupName] = new AssetGroup(_project, assetDefinitionAttribute.groupName, constructor);
+                    }
+                    else
+                    {
+                        assetGroup.SetAssetDefinition(constructor);
+                    }
+                }
+            }
+        }
+    }
+    
     public void ImportAssets(JsonObject json)
     {
         var jsonGroups = json["groups"];
@@ -21,11 +63,8 @@ public class AssetBundle<TAssetDefinitions>
             var assetType = jsonGroup.Key;
             if (!_assetGroups.TryGetValue(assetType, out var assetGroup))
             {
-                var definition = TAssetDefinitions.GetDefinition(assetType);
-                assetGroup = _assetGroups[assetType] = (Activator.CreateInstance(typeof(AssetGroup<,>).MakeGenericType(new[]
-                    {
-                        definition.Item1, definition.Item2
-                    })) as AssetGroup<IAsset<IRuntimeAsset>, IRuntimeAsset>)!;
+                Console.WriteLine($"Skipping assets from {assetType} because no definition was specified");
+                continue;
             }
             
             assetGroup.ImportAssets(jsonGroupAssets.AsObject());
@@ -40,30 +79,58 @@ public class AssetBundle<TAssetDefinitions>
     public void RemoveAsset(string group, Guid guid) => _assetGroups[group].RemoveAsset(guid);
 }
 
-public class AssetGroup<TAsset, TRuntimeAsset> 
-    where TAsset : IAsset<TRuntimeAsset>
-    where TRuntimeAsset : IRuntimeAsset
+public class AssetGroup
 {
-    private Dictionary<Guid, TAsset> _assets;
-    private Dictionary<Guid, TRuntimeAsset> _runtimeAssets;
+    private Project _project;
+    
+    private string _groupName;
+    private ConstructorInfo _constructor;
+    
+    private Dictionary<Guid, Asset> _assets;
+    private Dictionary<Guid, RuntimeAsset> _runtimeAssets;
 
+    public AssetGroup(Project project, string groupName, ConstructorInfo constructor)
+    {
+        _project = project;
+        _groupName = groupName;
+        _constructor = constructor;
+        _assets = new Dictionary<Guid, Asset>();
+        _runtimeAssets = new Dictionary<Guid, RuntimeAsset>();
+    }
+
+    public JsonObject Serialize()
+    {
+        var json = new JsonObject();
+        foreach (var asset in _assets)
+        {
+            json[asset.Key.ToString()] = asset.Value.Serialize();
+        }
+
+        return json;
+    }
+
+    public void SetAssetDefinition(ConstructorInfo constructor) => _constructor = constructor;
+    
     private bool _isLoaded = false;
 
-    public TAsset? GetAsset(Guid guid) => _assets[guid];
-    public TRuntimeAsset? GetRuntimeAsset(Guid guid) => _runtimeAssets[guid];
+    public Asset? GetAsset(Guid guid) => _assets[guid];
+    public RuntimeAsset? GetRuntimeAsset(Guid guid) => _runtimeAssets[guid];
 
     public void ImportAssets(JsonObject json)
     {
+        int i = 0;
         foreach (var jsonAsset in json)
         {
             var jsonAssetValue = jsonAsset.Value;
             if (jsonAssetValue == null) continue;
 
-            _assets[Guid.Parse(jsonAsset.Key)] = jsonAssetValue.GetValue<TAsset>();
+            _assets[Guid.Parse(jsonAsset.Key)] = (_constructor.Invoke(new object?[] { _project, jsonAssetValue }) as Asset)!;
+            i++;
         }
+        Console.WriteLine($"Imported {i} {_groupName}");
     }
     
-    public Guid AddAsset(TAsset asset)
+    public Guid AddAsset(Asset asset)
     {
         var guid = Guid.NewGuid();
         _assets[guid] = asset;
@@ -76,7 +143,7 @@ public class AssetGroup<TAsset, TRuntimeAsset>
     {
         if (_isLoaded) return;
         
-        _runtimeAssets = new Dictionary<Guid, TRuntimeAsset>(_assets.Count);
+        _runtimeAssets = new Dictionary<Guid, RuntimeAsset>(_assets.Count);
 
         var tasks = new Task[_assets.Count];
         int i = 0;

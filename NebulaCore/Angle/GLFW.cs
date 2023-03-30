@@ -4,7 +4,7 @@ namespace NebulaCore.Angle;
 
 using GLFWwindow = Void;
 
-public static unsafe class Glfw
+public static unsafe partial class Glfw
 {
 #if WINDOWS
     private const string dll = "glfw3.dll";
@@ -42,45 +42,45 @@ public static unsafe class Glfw
 
     public const int SAMPLES = 0x0002100D;
 
-    [DllImport(dll, EntryPoint = "glfwInit")]
-    public static extern int init();
+    [LibraryImport(dll, EntryPoint = "glfwInit")]
+    public static partial int Init();
 
-    [DllImport(dll, EntryPoint = "glfwTerminate")]
-    public static extern void terminate();
+    [LibraryImport(dll, EntryPoint = "glfwTerminate")]
+    public static partial void Terminate();
     
-    [DllImport(dll, EntryPoint = "glfwInitHint")]
-    public static extern void initHint(int hint, int value);
+    [LibraryImport(dll, EntryPoint = "glfwInitHint")]
+    public static partial void InitHint(int hint, int value);
 
-    [DllImport(dll, EntryPoint = "glfwGetVersion")]
-    public static extern void getVersion(int* major, int* minor, int* rev);
+    [LibraryImport(dll, EntryPoint = "glfwGetVersion")]
+    public static partial void GetVersion(int* major, int* minor, int* rev);
 
-    [DllImport(dll, EntryPoint = "glfwGetVersionString")]
-    public static extern string getVersionString();
+    [LibraryImport(dll, EntryPoint = "glfwGetVersionString")]
+    public static partial string GetVersionString();
 
-    [DllImport(dll, EntryPoint = "glfwSetErrorCallback")]
-    public static extern GLFWerrorfun setErrorCallback(GLFWerrorfun callback);
+    [LibraryImport(dll, EntryPoint = "glfwSetErrorCallback")]
+    public static partial GLFWerrorfun SetErrorCallback(GLFWerrorfun callback);
 
-    [DllImport(dll, EntryPoint = "glfwMakeContextCurrent")]
-    public static extern void makeContextCurrent(GLFWwindow* window);
+    [LibraryImport(dll, EntryPoint = "glfwMakeContextCurrent")]
+    public static partial void MakeContextCurrent(GLFWwindow* window);
 
-    [DllImport(dll, EntryPoint = "glfwSetFramebufferSizeCallback")]
-    public static extern GLFWframebuffersizefun setFramebufferSizeCallback(void* window, GLFWframebuffersizefun callback);
+    [LibraryImport(dll, EntryPoint = "glfwSetFramebufferSizeCallback")]
+    public static partial GLFWframebuffersizefun SetFramebufferSizeCallback(void* window, GLFWframebuffersizefun callback);
 
-    [DllImport(dll, EntryPoint = "glfwWindowHint")]
-    public static extern void windowHint(int hint, int value);
+    [LibraryImport(dll, EntryPoint = "glfwWindowHint")]
+    public static partial void WindowHint(int hint, int value);
     
-    [DllImport(dll, EntryPoint = "glfwCreateWindow")]
-    public static extern GLFWwindow* createWindow(int width, int height, string title, void* monitor, GLFWwindow* share);
+    [LibraryImport(dll, EntryPoint = "glfwCreateWindow")]
+    public static partial GLFWwindow* CreateWindow(int width, int height, string title, void* monitor, GLFWwindow* share);
         
-    [DllImport(dll, EntryPoint = "glfwWindowShouldClose")]
-    public static extern int windowShouldClose(GLFWwindow* window);
+    [LibraryImport(dll, EntryPoint = "glfwWindowShouldClose")]
+    public static partial int WindowShouldClose(GLFWwindow* window);
 
-    [DllImport(dll, EntryPoint = "glfwPollEvents")]
-    public static extern void pollEvents();
+    [LibraryImport(dll, EntryPoint = "glfwPollEvents")]
+    public static partial void PollEvents();
 
-    [DllImport(dll, EntryPoint = "glfwSwapBuffers")]
-    public static extern void swapBuffers(GLFWwindow* window);
+    [LibraryImport(dll, EntryPoint = "glfwSwapBuffers")]
+    public static partial void SwapBuffers(GLFWwindow* window);
 
-    [DllImport(dll, EntryPoint = "glfwDestroyWindow")]
-    public static extern void destroyWindow(GLFWwindow* window);
+    [LibraryImport(dll, EntryPoint = "glfwDestroyWindow")]
+    public static partial void DestroyWindow(GLFWwindow* window);
 }

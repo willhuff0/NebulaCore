@@ -3,35 +3,32 @@ using System.Text.Json.Nodes;
 
 namespace NebulaCore.Engine;
 
-public interface IAsset<TRuntimeAsset>
-where TRuntimeAsset : IRuntimeAsset
+[AttributeUsage(AttributeTargets.Class)]
+public class AssetDefinitionAttribute : Attribute
 {
-    public Task<TRuntimeAsset?> Load();
+    public string groupName;
 
-    public JsonObject Serialize();
+    public AssetDefinitionAttribute(string groupName)
+    {
+        this.groupName = groupName;
+    }
 }
 
-public interface IRuntimeAsset
-{
-    public Task Unload();
-    public Task AssignRuntimeReferences();
-}
-
-public abstract class Asset : IAsset<IRuntimeAsset>
+public abstract class Asset
 {
     protected Project Project;
     public string name;
-    public abstract Task<IRuntimeAsset?> Load();
+    public abstract Task<RuntimeAsset?> Load();
     public abstract JsonObject Serialize();
 
     protected Asset(Project project, JsonNode json)
     {
-        this.Project = project;
+        Project = project;
         name = json["name"].GetValue<string>();
     }
 }
 
-public abstract class RuntimeAsset : IRuntimeAsset
+public abstract class RuntimeAsset
 {
     public virtual Task AssignRuntimeReferences() => Task.CompletedTask;
     

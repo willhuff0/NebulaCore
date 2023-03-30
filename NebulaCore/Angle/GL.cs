@@ -10,7 +10,7 @@ using GLsizei = Int32;
 using GLchar = Char;
 using GLint = Int32;
 
-public static unsafe partial class GL
+public static partial class GL
 {
 #if WINDOWS
     private const string dll = "LibGLESv2.dll";

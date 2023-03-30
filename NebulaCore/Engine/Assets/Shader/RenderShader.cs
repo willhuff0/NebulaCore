@@ -13,7 +13,14 @@ public class RenderShader : FileAsset
         _imports = json["imports"]?.GetValue<string[]>() ?? Array.Empty<string>();
     }
 
-    public override Task<IRuntimeAsset?> Load()
+    public override JsonObject Serialize()
+    {
+        var json = base.Serialize();
+        json["imports"] = JsonValue.Create(_imports);
+        return json;
+    }
+
+    public override Task<RuntimeAsset?> Load()
     {
         var content = GetDataAsString();
         var lines = content.Split('\n');
@@ -46,8 +53,16 @@ public class RenderShader : FileAsset
                     break;
             }
         }
-        
-        // Add imports
+
+        for (int i = _imports.Length - 1; i >= 0; i--)
+        {
+            var library = LibraryShader.FindById(_imports[i]);
+            if (library != null)
+            {
+                vertexSource = vertexSource.Insert(0, library.Content + '\n');
+                fragmentSource = fragmentSource.Insert(0, library.Content + '\n');
+            }
+        }
 
         vertexSource = vertexSource.Insert(0, preamble + '\n');
         fragmentSource = fragmentSource.Insert(0, preamble + '\n');
@@ -61,7 +76,7 @@ public class RenderShader : FileAsset
             GL.GetShaderInfoLog(vertexShader, 1024, out int length, out string infoLog);
             GL.DeleteShader(vertexShader);
             Console.WriteLine($"Error compiling vertex shader ({name}): {infoLog}");
-            return Task.FromResult<IRuntimeAsset?>(null);
+            return Task.FromResult<RuntimeAsset?>(null);
         }
         
         var fragmentShader = GL.CreateShader(GL.FRAGMENT_SHADER);
@@ -73,7 +88,7 @@ public class RenderShader : FileAsset
             GL.GetShaderInfoLog(fragmentShader, 1024, out int length, out string infoLog);
             GL.DeleteShader(fragmentShader);
             Console.WriteLine($"Error compiling fragment shader ({name}): {infoLog}");
-            return Task.FromResult<IRuntimeAsset?>(null);
+            return Task.FromResult<RuntimeAsset?>(null);
         }
 
         var program = GL.CreateProgram();
@@ -90,7 +105,7 @@ public class RenderShader : FileAsset
             GL.GetProgramInfoLog(program, 1024, out int length, out string infoLog);
             GL.DeleteProgram(program);
             Console.WriteLine($"Error linking program ({name}): {infoLog}");
-            return Task.FromResult<IRuntimeAsset?>(null);
+            return Task.FromResult<RuntimeAsset?>(null);
         }
 
         GL.GetProgram(program, GL.ACTIVE_UNIFORMS, out int uniformCount);
@@ -101,14 +116,14 @@ public class RenderShader : FileAsset
             uniformLocations[uniformName] = GL.GetUniformLocation(program, uniformName);
         }
 
-        return Task.FromResult<IRuntimeAsset?>(new RuntimeRenderShader(program, uniformLocations));
+        return Task.FromResult<RuntimeAsset?>(new RuntimeRenderShader(program, uniformLocations));
     }
 }
 
 public class RuntimeRenderShader : RuntimeAsset
 {
-    private uint _program;
-    private Dictionary<string, int> _uniformLocations;
+    private readonly uint _program;
+    private readonly Dictionary<string, int> _uniformLocations;
 
     public RuntimeRenderShader(uint program, Dictionary<string, int> uniformLocations)
     {

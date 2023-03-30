@@ -11,58 +11,58 @@ public unsafe class Program
 
     private static void glfwFramebufferSizeCallback(void* window, int width, int height)
     {
-        GL.viewport(0, 0, width, height);
+        GL.Viewport(0, 0, width, height);
     }
     
     public static int Main(string[] args)
     {
-        Glfw.initHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
-        if (Glfw.init() == Glfw.FALSE)
+        Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
+        if (Glfw.Init() == Glfw.FALSE)
         {
             Console.WriteLine("Failed to initialize GLFW");
             return 1;
         }
 
-        Glfw.setErrorCallback(glfwErrorCallback);
+        Glfw.SetErrorCallback(glfwErrorCallback);
         
-        Glfw.windowHint(Glfw.CLIENT_API, Glfw.OPENGL_ES_API);
-        Glfw.windowHint(Glfw.CONTEXT_CREATION_API, Glfw.EGL_CONTEXT_API);
-        Glfw.windowHint(Glfw.CONTEXT_VERSION_MAJOR, 3);
-        Glfw.windowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
-        Glfw.windowHint(Glfw.SAMPLES, 4);
-        var window = Glfw.createWindow(1024, 768, "NebulaCore C#", null, null);
+        Glfw.WindowHint(Glfw.CLIENT_API, Glfw.OPENGL_ES_API);
+        Glfw.WindowHint(Glfw.CONTEXT_CREATION_API, Glfw.EGL_CONTEXT_API);
+        Glfw.WindowHint(Glfw.CONTEXT_VERSION_MAJOR, 3);
+        Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
+        Glfw.WindowHint(Glfw.SAMPLES, 4);
+        var window = Glfw.CreateWindow(1024, 768, "NebulaCore C#", null, null);
         if (window == null)
         {
             Console.WriteLine("Failed to create GLFW window");
-            Glfw.terminate();
+            Glfw.Terminate();
             return 2;
         }
         
-        Glfw.makeContextCurrent(window);
+        Glfw.MakeContextCurrent(window);
 
-        Glfw.setFramebufferSizeCallback(window, glfwFramebufferSizeCallback);
+        Glfw.SetFramebufferSizeCallback(window, glfwFramebufferSizeCallback);
         
         Console.WriteLine($"Nebula version: {"0.1.0"}");
         //Console.WriteLine($"GLFW version: {Glfw.getVersionString()}");
-        Console.WriteLine($"GL version: {GL.getString(GL.VERSION)}");
-        Console.WriteLine($"GL renderer: {GL.getString(GL.RENDERER)}");
+        Console.WriteLine($"GL version: {GL.GetString(GL.VERSION)}");
+        Console.WriteLine($"GL renderer: {GL.GetString(GL.RENDERER)}");
         
-        GL.viewport(0, 0, 1024, 768);
-        GL.enable(GL.DEPTH_TEST);
-        GL.enable(GL.CULL_FACE);
-        GL.cullFace(GL.BACK);
+        GL.Viewport(0, 0, 1024, 768);
+        GL.Enable(GL.DEPTH_TEST);
+        GL.Enable(GL.CULL_FACE);
+        GL.CullFace(GL.BACK);
         
-        GL.clearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+        GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
-        while (Glfw.windowShouldClose(window) == Glfw.FALSE)
+        while (Glfw.WindowShouldClose(window) == Glfw.FALSE)
         {
-            Glfw.pollEvents();
-            Glfw.swapBuffers(window);
+            Glfw.PollEvents();
+            Glfw.SwapBuffers(window);
         }
         
-        Glfw.destroyWindow(window);
-        Glfw.terminate();
+        Glfw.DestroyWindow(window);
+        Glfw.Terminate();
         return 0;
     }
 }

@@ -1,23 +1,27 @@
 ﻿using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
 
 namespace NebulaCore.Engine.Assets;
 
 public class LibraryShader : FileAsset
 {
+    private static Dictionary<string, LibraryShader> _idLookup;
+
+    private string _id;
     private string _content;
     
     public LibraryShader(Project project, JsonNode json) : base(project, json)
     {
+        _id = json["id"].GetValue<string>();
+        _content = File.ReadAllText(Path.Join(project.Root, path));
+        _idLookup[_id] = this;
     }
 
-    public override JsonObject Serialize() => new JsonObject()
-    {
+    public static LibraryShader? FindById(string id) => _idLookup[id];
 
-    };
-    
-    public override Task<IRuntimeAsset?> Load()
+    public string Content => _content;
+
+    public override Task<RuntimeAsset?> Load()
     {
-        throw new NotImplementedException();
+        return Task.FromResult<RuntimeAsset?>(null);
     }
 }

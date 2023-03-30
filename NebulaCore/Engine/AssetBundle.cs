@@ -38,9 +38,9 @@ public class AssetBundle
                 var constructor = type.GetConstructor(new[] { typeof(Project), typeof(JsonNode) });
                 if (constructor != null)
                 {
-                    if (!_assetGroups.TryGetValue(assetDefinitionAttribute.groupName, out var assetGroup))
+                    if (!_assetGroups.TryGetValue(assetDefinitionAttribute.GroupName, out var assetGroup))
                     {
-                         _assetGroups[assetDefinitionAttribute.groupName] = new AssetGroup(_project, assetDefinitionAttribute.groupName, constructor);
+                         _assetGroups[assetDefinitionAttribute.GroupName] = new AssetGroup(_project, assetDefinitionAttribute.GroupName, constructor);
                     }
                     else
                     {

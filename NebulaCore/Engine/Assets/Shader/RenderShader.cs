@@ -4,6 +4,7 @@ using NebulaCore.Angle;
 
 namespace NebulaCore.Engine.Assets;
 
+[AssetDefinition("renderShaders")]
 public class RenderShader : FileAsset
 {
     private string[] _imports;
@@ -116,7 +117,7 @@ public class RenderShader : FileAsset
             uniformLocations[uniformName] = GL.GetUniformLocation(program, uniformName);
         }
 
-        return Task.FromResult<RuntimeAsset?>(new RuntimeRenderShader(program, uniformLocations));
+        return Task.FromResult<RuntimeAsset?>(new RuntimeRenderShader(Project, program, uniformLocations));
     }
 }
 
@@ -125,7 +126,7 @@ public class RuntimeRenderShader : RuntimeAsset
     private readonly uint _program;
     private readonly Dictionary<string, int> _uniformLocations;
 
-    public RuntimeRenderShader(uint program, Dictionary<string, int> uniformLocations)
+    public RuntimeRenderShader(Project project, uint program, Dictionary<string, int> uniformLocations) : base(project)
     {
         _program = program;
         _uniformLocations = uniformLocations;

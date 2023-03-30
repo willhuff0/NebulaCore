@@ -6,12 +6,14 @@ namespace NebulaCore.Engine;
 [AttributeUsage(AttributeTargets.Class)]
 public class AssetDefinitionAttribute : Attribute
 {
-    public string groupName;
+    private string _groupName;
 
     public AssetDefinitionAttribute(string groupName)
     {
-        this.groupName = groupName;
+        _groupName = groupName;
     }
+
+    public string GroupName => _groupName;
 }
 
 public abstract class Asset
@@ -30,9 +32,16 @@ public abstract class Asset
 
 public abstract class RuntimeAsset
 {
+    protected Project Project;
+    
     public virtual Task AssignRuntimeReferences() => Task.CompletedTask;
     
     public abstract Task Unload();
+
+    protected RuntimeAsset(Project project)
+    {
+        Project = project;
+    }
 }
 
 public abstract class FileAsset : Asset

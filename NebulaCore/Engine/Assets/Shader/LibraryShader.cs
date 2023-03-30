@@ -2,6 +2,7 @@
 
 namespace NebulaCore.Engine.Assets;
 
+[AssetDefinition("libraryShaders")]
 public class LibraryShader : FileAsset
 {
     private static Dictionary<string, LibraryShader> _idLookup;

@@ -34,4 +34,8 @@
       <PackageReference Include="StbImageSharp" Version="2.27.13" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AssimpNet\AssimpNet\AssimpNet.csproj" />
+    </ItemGroup>
+
 </Project>

@@ -9,6 +9,7 @@ using GLfloat = Single;
 using GLsizei = Int32;
 using GLchar = Char;
 using GLint = Int32;
+using GLsizeiptr = Int64;
 
 public static partial class GL
 {
@@ -135,6 +136,17 @@ public static partial class GL
     public const GLenum REPEAT = 0x2901;
     public const GLenum CLAMP_TO_EDGE = 0x812F;
     public const GLenum MIRRORED_REPEAT = 0x8370;
+
+    public const GLenum GL_ARRAY_BUFFER = 0x8892;
+    public const GLenum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
+    public const GLenum GL_ARRAY_BUFFER_BINDING = 0x8894;
+    public const GLenum GL_ELEMENT_ARRAY_BUFFER_BINDING = 0x8895;
+    public const GLenum GL_STREAM_DRAW = 0x88E0;
+    public const GLenum GL_STATIC_DRAW = 0x88E4;
+    public const GLenum GL_DYNAMIC_DRAW = 0x88E8;
+    public const GLenum GL_BUFFER_SIZE = 0x8764;
+    public const GLenum GL_BUFFER_USAGE = 0x8765;
+    public const GLenum GL_CURRENT_VERTEX_ATTRIB = 0x8626;
 
     [LibraryImport(dll, EntryPoint = "glGetString")]
     public static partial string GetString(GLenum name);
@@ -279,4 +291,31 @@ public static partial class GL
     
     [LibraryImport(dll, EntryPoint = "glDeleteTextures")]
     public static partial void DeleteTextures(GLsizei n, GLuint[] textures);
+
+    [LibraryImport(dll, EntryPoint = "glGenVertexArrays")]
+    public static partial void GenVertexArrays(GLsizei n, out GLuint[] arrays);
+
+    [LibraryImport(dll, EntryPoint = "glBindVertexArray")]
+    public static partial void BindVertexArray(GLuint array);
+
+    [LibraryImport(dll, EntryPoint = "glDeleteVertexArrays")]
+    public static partial void DeleteVertexArrays(GLsizei n, GLuint[] arrays);
+
+    [LibraryImport(dll, EntryPoint = "glGenBuffers")]
+    public static partial void GenBuffers(GLsizei n, out GLuint[] buffers);
+
+    [LibraryImport(dll, EntryPoint = "glBindBuffer")]
+    public static partial void BindBuffer(GLenum target, GLuint buffer);
+
+    [LibraryImport(dll, EntryPoint = "glBufferData")]
+    public static partial void BufferData(GLenum target, GLsizeiptr size, ref dynamic data, GLenum usage);
+
+    [LibraryImport(dll, EntryPoint = "glEnableVertexAttribArray")]
+    public static partial void EnableVertexAttribArray(GLuint index);
+    
+    [LibraryImport(dll, EntryPoint = "glDisableVertexAttribArray")]
+    public static partial void DisableVertexAttribArray(GLuint index);
+    
+    [LibraryImport(dll, EntryPoint = "glVertexAttribPointer")]
+    public static partial void VertexAttribPointer(GLuint index, );
 }

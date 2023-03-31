@@ -23,7 +23,7 @@ public class RenderShader : FileAsset
 
     public override Task<RuntimeAsset?> Load()
     {
-        var content = GetDataAsString();
+        var content = FileAssetGetText();
         var lines = content.Split('\n');
 
         string preamble = "", vertexSource = "", fragmentSource = "";

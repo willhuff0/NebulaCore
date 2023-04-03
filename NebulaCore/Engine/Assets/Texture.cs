@@ -20,18 +20,21 @@ public class Texture : FileAsset
 
     public override Task<RuntimeAsset?> Load()
     {
-        var fileStream = File.OpenRead(Path.Join(Project.Root, path));
-        StbImage.stbi_set_flip_vertically_on_load(1);
-        var image = ImageResult.FromStream(fileStream, ColorComponents.RedGreenBlueAlpha);
-        dynamic data = image.Data;
-        fileStream.Close();
+        dynamic data;
+        ImageResult image;
+        using (var fileStream = FileAssetOpenRead())
+        {
+            StbImage.stbi_set_flip_vertically_on_load(1);
+            image = ImageResult.FromStream(fileStream, ColorComponents.RedGreenBlueAlpha);
+            data = image.Data;
+        }
 
         GL.GenTextures(1, out var textures);
         var texture = textures[0];
         GL.ActiveTexture(GL.TEXTURE0);
         GL.BindTexture(GL.TEXTURE_2D, texture);
 
-        GL.TexImage2D(GL.TEXTURE_2D, 0, (int)GL.RGBA, image.Width, image.Height, 0, GL.RGBA, GL.UNSIGNED_BYTE, ref data);
+        GL.TexImage2D(GL.TEXTURE_2D, 0, (int)GL.RGBA, image.Width, image.Height, 0, GL.RGBA, GL.UNSIGNED_BYTE, in data);
         
         GL.TexParameter(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
         GL.TexParameter(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);

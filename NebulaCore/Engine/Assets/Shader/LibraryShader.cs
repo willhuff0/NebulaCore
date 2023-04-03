@@ -12,8 +12,8 @@ public class LibraryShader : FileAsset
     
     public LibraryShader(Project project, JsonNode json) : base(project, json)
     {
-        _id = json["id"].GetValue<string>();
-        _content = File.ReadAllText(Path.Join(project.Root, path));
+        _id = json["id"]!.GetValue<string>();
+        _content = File.ReadAllText(AbsolutePath);
         _idLookup[_id] = this;
     }
 

@@ -137,16 +137,24 @@ public static partial class GL
     public const GLenum CLAMP_TO_EDGE = 0x812F;
     public const GLenum MIRRORED_REPEAT = 0x8370;
 
-    public const GLenum GL_ARRAY_BUFFER = 0x8892;
-    public const GLenum GL_ELEMENT_ARRAY_BUFFER = 0x8893;
-    public const GLenum GL_ARRAY_BUFFER_BINDING = 0x8894;
-    public const GLenum GL_ELEMENT_ARRAY_BUFFER_BINDING = 0x8895;
-    public const GLenum GL_STREAM_DRAW = 0x88E0;
-    public const GLenum GL_STATIC_DRAW = 0x88E4;
-    public const GLenum GL_DYNAMIC_DRAW = 0x88E8;
-    public const GLenum GL_BUFFER_SIZE = 0x8764;
-    public const GLenum GL_BUFFER_USAGE = 0x8765;
-    public const GLenum GL_CURRENT_VERTEX_ATTRIB = 0x8626;
+    public const GLenum ARRAY_BUFFER = 0x8892;
+    public const GLenum ELEMENT_ARRAY_BUFFER = 0x8893;
+    public const GLenum ARRAY_BUFFER_BINDING = 0x8894;
+    public const GLenum ELEMENT_ARRAY_BUFFER_BINDING = 0x8895;
+    public const GLenum STREAM_DRAW = 0x88E0;
+    public const GLenum STATIC_DRAW = 0x88E4;
+    public const GLenum DYNAMIC_DRAW = 0x88E8;
+    public const GLenum BUFFER_SIZE = 0x8764;
+    public const GLenum BUFFER_USAGE = 0x8765;
+    public const GLenum CURRENT_VERTEX_ATTRIB = 0x8626;
+
+    public const GLenum POINTS = 0x0000;
+    public const GLenum LINES = 0x0001;
+    public const GLenum LINE_LOOP = 0x0002;
+    public const GLenum LINE_STRIP = 0x0003;
+    public const GLenum TRIANGLES = 0x0004;
+    public const GLenum TRIANGLE_STRIP = 0x0005;
+    public const GLenum TRIANGLE_FAN = 0x0006;
 
     [LibraryImport(dll, EntryPoint = "glGetString")]
     public static partial string GetString(GLenum name);
@@ -272,7 +280,7 @@ public static partial class GL
     public static partial void BindTexture(GLenum target, GLuint texture);
 
     [LibraryImport(dll, EntryPoint = "glTexImage2D")]
-    public static partial void TexImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, ref dynamic data);
+    public static partial void TexImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, in dynamic data);
     
     [LibraryImport(dll, EntryPoint = "glTexParameter")]
     public static partial void TexParameter(GLenum target, GLenum pname, GLfloat param);
@@ -303,12 +311,15 @@ public static partial class GL
 
     [LibraryImport(dll, EntryPoint = "glGenBuffers")]
     public static partial void GenBuffers(GLsizei n, out GLuint[] buffers);
+    
+    [LibraryImport(dll, EntryPoint = "glDeleteBuffers")]
+    public static partial void DeleteBuffers(GLsizei n, GLuint[] buffers);
 
     [LibraryImport(dll, EntryPoint = "glBindBuffer")]
     public static partial void BindBuffer(GLenum target, GLuint buffer);
 
     [LibraryImport(dll, EntryPoint = "glBufferData")]
-    public static partial void BufferData(GLenum target, GLsizeiptr size, ref dynamic data, GLenum usage);
+    public static partial void BufferData(GLenum target, GLsizeiptr size, in dynamic data, GLenum usage);
 
     [LibraryImport(dll, EntryPoint = "glEnableVertexAttribArray")]
     public static partial void EnableVertexAttribArray(GLuint index);
@@ -317,5 +328,16 @@ public static partial class GL
     public static partial void DisableVertexAttribArray(GLuint index);
     
     [LibraryImport(dll, EntryPoint = "glVertexAttribPointer")]
-    public static partial void VertexAttribPointer(GLuint index, );
+    public static partial void VertexAttribPointer(GLuint index, GLint size, GLenum type, bool normalized, GLsizei stride, IntPtr pointer);
+
+    [LibraryImport(dll, EntryPoint = "glVertexAttribPointer")]
+    public static partial void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLsizei stride, IntPtr pointer);
+
+    [LibraryImport(dll, EntryPoint = "glDrawElements")]
+    public static partial void DrawElements(GLenum mode, GLsizei count, GLenum type, in dynamic indices);
+
+    [LibraryImport(dll, EntryPoint = "glDrawArrays")]
+    public static partial void DrawArrays(GLenum mode, GLint first, GLsizei count);
+    
+    
 }

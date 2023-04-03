@@ -76,7 +76,7 @@ public class RenderShader : FileAsset
         {
             GL.GetShaderInfoLog(vertexShader, 1024, out int length, out string infoLog);
             GL.DeleteShader(vertexShader);
-            Console.WriteLine($"Error compiling vertex shader ({name}): {infoLog}");
+            Console.WriteLine($"Error compiling vertex shader ({Name}): {infoLog}");
             return Task.FromResult<RuntimeAsset?>(null);
         }
         
@@ -88,7 +88,7 @@ public class RenderShader : FileAsset
         {
             GL.GetShaderInfoLog(fragmentShader, 1024, out int length, out string infoLog);
             GL.DeleteShader(fragmentShader);
-            Console.WriteLine($"Error compiling fragment shader ({name}): {infoLog}");
+            Console.WriteLine($"Error compiling fragment shader ({Name}): {infoLog}");
             return Task.FromResult<RuntimeAsset?>(null);
         }
 
@@ -105,7 +105,7 @@ public class RenderShader : FileAsset
         {
             GL.GetProgramInfoLog(program, 1024, out int length, out string infoLog);
             GL.DeleteProgram(program);
-            Console.WriteLine($"Error linking program ({name}): {infoLog}");
+            Console.WriteLine($"Error linking program ({Name}): {infoLog}");
             return Task.FromResult<RuntimeAsset?>(null);
         }
 

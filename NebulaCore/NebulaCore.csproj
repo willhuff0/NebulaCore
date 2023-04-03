@@ -38,4 +38,8 @@
       <ProjectReference Include="..\AssimpNet\AssimpNet\AssimpNet.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Engine\Nodes\" />
+    </ItemGroup>
+
 </Project>

@@ -19,12 +19,12 @@ public class AssetDefinitionAttribute : Attribute
 public abstract class Asset
 {
     protected Project Project;
-    public string name;
+    public string Name;
 
     protected Asset(Project project, JsonNode json)
     {
         Project = project;
-        name = json["name"].GetValue<string>();
+        Name = json["name"]!.GetValue<string>();
     }
     
     public abstract JsonObject Serialize();

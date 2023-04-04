@@ -9,7 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.5
   json_rpc_2: ^3.0.2
+  resizable_widget: ^1.0.5
   stream_channel: ^2.1.1
 
 dev_dependencies:

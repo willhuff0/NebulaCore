@@ -13,7 +13,7 @@ class NbProject {
     final json = await Nebula.peer.sendRequest('LoadProject', {'path': path});
     final assets = (json['assets'] as Map<String, Map<String, Map<String, dynamic>>>?)?.map((groupKey, group) {
       return MapEntry(groupKey, group.map((key, value) {
-        return MapEntry(key, NbAsset.from(value));
+        return MapEntry(key, NbAsset.from(groupKey, key, value));
       }));
     });
     return NbProject._(json['name'], json['bundleId'], assets ?? {});

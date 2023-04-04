@@ -2,16 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart' as mt;
-import 'package:nebula/nebula.dart';
+import 'package:nebula_editor/nebula.dart';
 
 import 'package:http/http.dart' as http;
 
 class EditorContext {
-  final void Function() _onInitContext;
-
-  Nebula? _context;
-  Nebula? get context => _context;
-  Nebula get nebula => context!;
+  static Nebula? _engine;
+  static Nebula? get engine => _engine!;
 
   late final StreamController<EditorLogEntry> _onLogController;
   late final Stream<EditorLogEntry> onLog;
@@ -22,7 +19,7 @@ class EditorContext {
   late final StreamController<Scene?> _onSceneLoadedController;
   late final Stream<Scene?> onSceneLoaded;
 
-  EditorContext(this._onInitContext) {
+  EditorContext() {
     _onLogController = StreamController.broadcast();
     _onProjectLoadedController = StreamController.broadcast();
     _onSceneLoadedController = StreamController.broadcast();

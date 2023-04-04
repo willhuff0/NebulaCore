@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nebula_editor/nebula_widgets.dart';
+import 'package:nebula_editor/widgets/nebula_widgets.dart';
 
 import '../editor_page.dart';
 

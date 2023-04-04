@@ -1,6 +1,6 @@
 namespace NebulaCore;
 
-public class Interop
+public class Debugger
 {
     
 }

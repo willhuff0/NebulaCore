@@ -7,30 +7,16 @@ import 'package:nebula_editor/nebula.dart';
 import 'package:http/http.dart' as http;
 
 class EditorContext {
-  static Nebula? _engine;
-  static Nebula? get engine => _engine!;
+  static final _onLogController = StreamController<LogEntry>.broadcast();
+  static final onLog = _onLogController.stream;
 
-  late final StreamController<EditorLogEntry> _onLogController;
-  late final Stream<EditorLogEntry> onLog;
+  static final _onProjectLoadedController = StreamController<NbProject?>.broadcast();
+  static final onProjectLoaded = _onProjectLoadedController.stream;
 
-  late final StreamController<NebulaProject?> _onProjectLoadedController;
-  late final Stream<NebulaProject?> onProjectLoaded;
-
-  late final StreamController<Scene?> _onSceneLoadedController;
-  late final Stream<Scene?> onSceneLoaded;
-
-  EditorContext() {
-    _onLogController = StreamController.broadcast();
-    _onProjectLoadedController = StreamController.broadcast();
-    _onSceneLoadedController = StreamController.broadcast();
-    onLog = _onLogController.stream;
-    onProjectLoaded = _onProjectLoadedController.stream;
-    onSceneLoaded = _onSceneLoadedController.stream;
-  }
+  static final _onSceneLoadedController = StreamController<NbScene?>.broadcast();
+  static final onSceneLoaded = _onSceneLoadedController.stream;
 
   void initContext(Nebula nebulaContext) {
-    _context = nebulaContext;
-    _onInitContext();
     log('Initialized Nebula ${nebula.getVersion()}\nAPI: ${nebula.getGlVersion()}\nDevice: ${nebula.getRenderer()}');
   }
 
@@ -54,17 +40,17 @@ class EditorContext {
     _onProjectLoadedController.add(project);
   }
 
-  void log(String message, {LogLevel level = LogLevel.info}) {
-    _onLogController.add(EditorLogEntry(message, level));
+  static void log(String message, {LogLevel level = LogLevel.info}) {
+    _onLogController.add(LogEntry(message, level));
   }
 }
 
-class EditorLogEntry {
+class LogEntry {
   final String message;
   final LogLevel level;
   final DateTime timestamp;
 
-  EditorLogEntry(this.message, this.level) : timestamp = DateTime.now();
+  LogEntry(this.message, this.level) : timestamp = DateTime.now();
 }
 
 enum LogLevel {

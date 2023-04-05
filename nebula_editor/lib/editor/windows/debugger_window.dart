@@ -14,8 +14,8 @@ class EditorWindowDebugger extends StatefulWidget {
 
 class _EditorWindowDebuggerState extends State<EditorWindowDebugger> {
   StreamSubscription? _onLogSubscription;
-  late final List<EditorLogEntry> entries;
-  late List<EditorLogEntry> filteredEntries;
+  late final List<LogEntry> entries;
+  late List<LogEntry> filteredEntries;
 
   late final Set<LogLevel> levelFilters;
 

@@ -2,8 +2,6 @@ using System.Runtime.InteropServices;
 
 namespace NebulaCore.Angle;
 
-using GLFWwindow = Void;
-
 public static unsafe partial class Glfw
 {
 #if WINDOWS
@@ -14,17 +12,17 @@ public static unsafe partial class Glfw
 
     public delegate void GLFWerrorfun(int error_code, string description);
 
-    public delegate void GLFWframebuffersizefun(GLFWwindow* window, int width, int height);
+    public delegate void GLFWframebuffersizefun(void* window, int width, int height);
 
-    public delegate void GLFWkeyfun(GLFWwindow* window, int key, int scancode, int action, int mods);
+    public delegate void GLFWkeyfun(void* window, int key, int scancode, int action, int mods);
 
-    public delegate void GLFWmousebuttonfun(GLFWwindow* window, int button, int action, int mods);
+    public delegate void GLFWmousebuttonfun(void* window, int button, int action, int mods);
 
-    public delegate void GLFWscrollfun(GLFWwindow* window, double xoffset, double yoffset);
+    public delegate void GLFWscrollfun(void* window, double xoffset, double yoffset);
 
-    public delegate void GLFWcursorposfun(GLFWwindow* window, double xpos, double ypos);
+    public delegate void GLFWcursorposfun(void* window, double xpos, double ypos);
 
-    public delegate void GLFWwindowfocusfun(GLFWwindow* window, int focused);
+    public delegate void voidfocusfun(void* window, int focused);
     
     public const int TRUE = 1;
     public const int FALSE = 0;
@@ -65,68 +63,70 @@ public static unsafe partial class Glfw
     public const int CURSOR_HIDDEN = 0x00034002;
     public const int CURSOR_DISABLED = 0x00034003;
 
-    [LibraryImport(dll, EntryPoint = "glfwInit")]
-    public static partial int Init();
+    [LibraryImport(dll, EntryPoint = "glfwInit", StringMarshalling = StringMarshalling.Utf8)]
+    [return:MarshalAs(UnmanagedType.I4)]
+    public static partial bool Init();
 
-    [LibraryImport(dll, EntryPoint = "glfwTerminate")]
+    [LibraryImport(dll, EntryPoint = "glfwTerminate", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void Terminate();
     
-    [LibraryImport(dll, EntryPoint = "glfwInitHint")]
+    [LibraryImport(dll, EntryPoint = "glfwInitHint", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void InitHint(int hint, int value);
 
-    [LibraryImport(dll, EntryPoint = "glfwGetVersion")]
+    [LibraryImport(dll, EntryPoint = "glfwGetVersion", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void GetVersion(int* major, int* minor, int* rev);
 
-    [LibraryImport(dll, EntryPoint = "glfwGetVersionString")]
+    [LibraryImport(dll, EntryPoint = "glfwGetVersionString", StringMarshalling = StringMarshalling.Utf8)]
     public static partial string GetVersionString();
 
-    [LibraryImport(dll, EntryPoint = "glfwSetErrorCallback")]
+    [LibraryImport(dll, EntryPoint = "glfwSetErrorCallback", StringMarshalling = StringMarshalling.Utf8)]
     public static partial GLFWerrorfun SetErrorCallback(GLFWerrorfun callback);
 
-    [LibraryImport(dll, EntryPoint = "glfwMakeContextCurrent")]
-    public static partial void MakeContextCurrent(GLFWwindow* window);
+    [LibraryImport(dll, EntryPoint = "glfwMakeContextCurrent", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void MakeContextCurrent(void* window);
 
-    [LibraryImport(dll, EntryPoint = "glfwSetFramebufferSizeCallback")]
+    [LibraryImport(dll, EntryPoint = "glfwSetFramebufferSizeCallback", StringMarshalling = StringMarshalling.Utf8)]
     public static partial GLFWframebuffersizefun SetFramebufferSizeCallback(void* window, GLFWframebuffersizefun callback);
 
-    [LibraryImport(dll, EntryPoint = "glfwWindowHint")]
+    [LibraryImport(dll, EntryPoint = "glfwWindowHint", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void WindowHint(int hint, int value);
     
-    [LibraryImport(dll, EntryPoint = "glfwCreateWindow")]
-    public static partial GLFWwindow* CreateWindow(int width, int height, string title, void* monitor, GLFWwindow* share);
+    [LibraryImport(dll, EntryPoint = "glfwCreateWindow", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void* CreateWindow(int width, int height, string title, void* monitor, void* share);
         
-    [LibraryImport(dll, EntryPoint = "glfwWindowShouldClose")]
-    public static partial int WindowShouldClose(GLFWwindow* window);
+    [LibraryImport(dll, EntryPoint = "glfwWindowShouldClose", StringMarshalling = StringMarshalling.Utf8)]
+    [return:MarshalAs(UnmanagedType.I4)]
+    public static partial bool WindowShouldClose(void* window);
 
-    [LibraryImport(dll, EntryPoint = "glfwPollEvents")]
+    [LibraryImport(dll, EntryPoint = "glfwPollEvents", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void PollEvents();
 
-    [LibraryImport(dll, EntryPoint = "glfwSwapBuffers")]
-    public static partial void SwapBuffers(GLFWwindow* window);
+    [LibraryImport(dll, EntryPoint = "glfwSwapBuffers", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void SwapBuffers(void* window);
 
-    [LibraryImport(dll, EntryPoint = "glfwDestroyWindow")]
-    public static partial void DestroyWindow(GLFWwindow* window);
+    [LibraryImport(dll, EntryPoint = "glfwDestroyWindow", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void DestroyWindow(void* window);
 
-    [LibraryImport(dll, EntryPoint = "glfwSetKeyCallback")]
-    public static partial GLFWkeyfun SetKeyCallback(GLFWwindow* window, GLFWkeyfun callback);
+    [LibraryImport(dll, EntryPoint = "glfwSetKeyCallback", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial GLFWkeyfun SetKeyCallback(void* window, GLFWkeyfun callback);
     
-    [LibraryImport(dll, EntryPoint = "glfwSetMouseButtonCallback")]
-    public static partial GLFWmousebuttonfun SetMouseButtonCallback(GLFWwindow* window, GLFWmousebuttonfun callback);
+    [LibraryImport(dll, EntryPoint = "glfwSetMouseButtonCallback", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial GLFWmousebuttonfun SetMouseButtonCallback(void* window, GLFWmousebuttonfun callback);
     
-    [LibraryImport(dll, EntryPoint = "glfwSetScrollCallback")]
-    public static partial GLFWscrollfun SetScrollCallback(GLFWwindow* window, GLFWscrollfun callback);
+    [LibraryImport(dll, EntryPoint = "glfwSetScrollCallback", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial GLFWscrollfun SetScrollCallback(void* window, GLFWscrollfun callback);
 
-    [LibraryImport(dll, EntryPoint = "glfwSetCursorPosCallback")]
-    public static partial GLFWcursorposfun SetCursorPosCallback(GLFWwindow* window, GLFWcursorposfun callback);
+    [LibraryImport(dll, EntryPoint = "glfwSetCursorPosCallback", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial GLFWcursorposfun SetCursorPosCallback(void* window, GLFWcursorposfun callback);
     
-    [LibraryImport(dll, EntryPoint = "glfwRawMouseMotionSupported")]
+    [LibraryImport(dll, EntryPoint = "glfwRawMouseMotionSupported", StringMarshalling = StringMarshalling.Utf8)]
     public static partial int RawMouseMotionSupported();
     
-    [LibraryImport(dll, EntryPoint = "glfwSetInputMode")]
-    public static partial void SetInputMode(GLFWwindow* window, int mode, int value);
+    [LibraryImport(dll, EntryPoint = "glfwSetInputMode", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void SetInputMode(void* window, int mode, int value);
     
-    [LibraryImport(dll, EntryPoint = "glfwSetWindowFocusCallback")]
-    public static partial GLFWwindowfocusfun SetWindowFocusCallback(GLFWwindow* window, GLFWwindowfocusfun callback);
+    [LibraryImport(dll, EntryPoint = "glfwSetWindowFocusCallback", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial voidfocusfun SetWindowFocusCallback(void* window, voidfocusfun callback);
 }
 
     /// <summary>

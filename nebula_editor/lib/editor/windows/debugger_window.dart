@@ -24,7 +24,7 @@ class _EditorWindowDebuggerState extends State<EditorWindowDebugger> {
     entries = [];
     filteredEntries = [];
     levelFilters = LogLevel.values.toSet();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _onLogSubscription = Editor.of(context).onLog.listen((entry) => setState(() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _onLogSubscription = EditorContext.onLog.listen((entry) => setState(() {
           entries.insert(0, entry);
           if (levelFilters.contains(entry.level)) filteredEntries.insert(0, entry);
         })));

@@ -32,6 +32,7 @@
 
     <ItemGroup>
       <PackageReference Include="StbImageSharp" Version="2.27.13" />
+      <PackageReference Include="StreamJsonRpc" Version="2.14.24" />
     </ItemGroup>
 
     <ItemGroup>

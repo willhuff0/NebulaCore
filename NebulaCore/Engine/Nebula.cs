@@ -7,7 +7,12 @@ namespace NebulaCore.Engine;
 
 public static unsafe class Nebula
 {
-    private static RuntimeScene? ActiveScene;
+    public static Project? ActiveProject { get; set; }
+    public static RuntimeScene? ActiveScene { get; set; }
+    
+    public static string NebulaVersion { get; private set; }
+    public static string GlVersion { get; private set; }
+    public static string GlRenderer { get; private set; }
     
     private static void GlfwErrorCallback(int error_code, string description)
     {
@@ -24,7 +29,7 @@ public static unsafe class Nebula
     public static void InitializeEngine()
     {
         Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
-        if (Glfw.Init() == Glfw.FALSE)
+        if (!Glfw.Init())
         {
             Console.WriteLine("Failed to initialize GLFW");
             return;
@@ -49,10 +54,10 @@ public static unsafe class Nebula
 
         Glfw.SetFramebufferSizeCallback(window, GlfwFramebufferSizeCallback);
         
-        Console.WriteLine($"Nebula version: {"0.1.0"}");
+        Console.WriteLine($"Nebula version: {NebulaVersion = "0.1.0"}");
         //Console.WriteLine($"GLFW version: {Glfw.getVersionString()}");
-        Console.WriteLine($"GL version: {GL.GetString(GL.VERSION)}");
-        Console.WriteLine($"GL renderer: {GL.GetString(GL.RENDERER)}");
+        Console.WriteLine($"GL version: {GlVersion = GL.GetString(GL.VERSION)}");
+        Console.WriteLine($"GL renderer: {GlRenderer = GL.GetString(GL.RENDERER)}");
         
         GL.Viewport(0, 0, 1024, 768);
         _currentWidth = 1024;
@@ -65,17 +70,22 @@ public static unsafe class Nebula
         GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         
         Input.Setup(window);
-
+        NebulaDebugger.StartServer();
+        
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        while (Glfw.WindowShouldClose(window) == Glfw.FALSE)
+        var test = NebulaDebuggerHandler.CreateAndLoadProject("/Users/will/RiderProjects/NebulaCore/TestProject/Test Project.neb");
+
+        while (!Glfw.WindowShouldClose(window))
         {
+            var inputState = Input.GetState();
+            if (inputState.IsKeyPressed((int)Key.Escape)) Input.UnlockCursor(window);
+            
             if (ActiveScene != null)
             {
                 var timeDelta = (float) stopwatch.Elapsed.TotalSeconds;
                 stopwatch.Restart();
-                var inputState = Input.GetState();
                 var frameArgs = new FrameEventArgs(_currentWidth, _currentHeight, timeDelta, inputState);
                 ActiveScene.Frame(frameArgs);
             }
@@ -83,6 +93,8 @@ public static unsafe class Nebula
             Glfw.PollEvents();
             Glfw.SwapBuffers(window);
         }
+        
+        NebulaDebugger.StopServer();
         
         Glfw.DestroyWindow(window);
         Glfw.Terminate();
@@ -158,16 +170,25 @@ public static unsafe class Input
     private static void GlfwWindowFocusCallback(void* window, int focused)
     {
         _ResetState();
+        if (focused == Glfw.TRUE) LockCursor(window);
     }
-    
-    public static void Setup(void* window)
+
+    public static void LockCursor(void* window)
     {
         Glfw.SetInputMode(window, Glfw.CURSOR, Glfw.CURSOR_DISABLED);
         if (Glfw.RawMouseMotionSupported() == Glfw.TRUE)
         {
             Glfw.SetInputMode(window, Glfw.RAW_MOUSE_MOTION, Glfw.TRUE);
         }
+    }
 
+    public static void UnlockCursor(void* window)
+    {
+        Glfw.SetInputMode(window, Glfw.CURSOR, Glfw.CURSOR_NORMAL);
+    }
+    
+    public static void Setup(void* window)
+    {
         Glfw.SetCursorPosCallback(window, GlfwCursorPosCallback);
         Glfw.SetMouseButtonCallback(window, GlfwMouseButtonCallback);
         

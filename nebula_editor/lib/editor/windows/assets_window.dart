@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:nebula_editor/editor/editor_context.dart';
+import 'package:nebula_editor/nebula.dart';
 import 'package:resizable_widget/resizable_widget.dart';
 
 import '../editor_page.dart';
@@ -16,25 +17,24 @@ class EditorWindowAssets extends StatefulWidget {
 class _EditorWindowAssetsState extends State<EditorWindowAssets> {
   late final StreamSubscription _onProjectLoadedSubscription;
 
-  nb.AssetBundle? bundle;
+  NbProject? project;
   var showImportedAssets = true;
 
-  nb.AssetCollection<nb.Asset>? selectedCollection;
-  List<MapEntry<String, nb.Asset>>? entries;
-  
+  NbAssetGroup? selectedGroup;
+  List<MapEntry<String, NbAsset>>? entries;
 
-  void selectCollection(nb.AssetCollection<nb.Asset>? collection) {
+  void selectGroup(NbAssetGroup? group) {
     setState(() {
-    selectedCollection = collection;
-    entries = selectedCollection?.entries.toList();
+      selectedGroup = group;
+      entries = selectedGroup?.entries.toList();
     });
   }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _onProjectLoadedSubscription = Editor.of(context).onProjectLoaded.listen((project) {
-        setState(() => bundle = project?.assetBundle);
+      _onProjectLoadedSubscription = EditorContext.onProjectLoaded.listen((project) {
+        setState(() => project = project);
       });
     });
     super.initState();
@@ -48,10 +48,10 @@ class _EditorWindowAssetsState extends State<EditorWindowAssets> {
 
   @override
   Widget build(BuildContext context) {
-    if (bundle == null) {
-      return Center(child: Text('No asset bundle loaded'));
+    if (project == null) {
+      return Center(child: Text('No project loaded'));
     }
-    final assets = showImportedAssets ? bundle!.allAssets : bundle!.assets;
+    final assets = showImportedAssets ? project!.allAssets : project!.assets;
     return Row(
       children: [
         Container(
@@ -87,7 +87,6 @@ class _EditorWindowAssetsState extends State<EditorWindowAssets> {
                 style: MenuStyle(alignment: Alignment.topRight, visualDensity: VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity)),
                 menuChildren: [
                   CreateAssetCollectionDialog(
-                    editorContext: Editor.of(context),
                     onCreateAssetCollection: () => setState(() {}),
                   ),
                 ],
@@ -129,7 +128,7 @@ class _EditorWindowAssetsState extends State<EditorWindowAssets> {
                                 onPressed: () {},
                               ))
                           .toList(),
-                      ...bundle!.deserializers.entries
+                      ...NbAsset.deserializers.entries
                           .where((element) => !assets.containsKey(element.key))
                           .map((deserializer) => FilledButton.tonal(
                                 style: ButtonStyle(
@@ -151,7 +150,7 @@ class _EditorWindowAssetsState extends State<EditorWindowAssets> {
                   ),
                 ),
               ),
-              if (selectedCollection != null)
+              if (selectedGroup != null)
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: ListView.builder(
@@ -160,10 +159,11 @@ class _EditorWindowAssetsState extends State<EditorWindowAssets> {
                       return ListTile(
                         dense: true,
                         visualDensity: VisualDensity(horizontal: VisualDensity.maximumDensity, vertical: VisualDensity.maximumDensity),
-                        title: Text(),
-                      )
+                        title: Text(asset.value.name),
+                        subtitle: Text(asset.key),
+                      );
                     },
-                    itemCount: selectedCollection!.length,
+                    itemCount: selectedGroup!.length,
                   ),
                 ),
             ],
@@ -175,10 +175,9 @@ class _EditorWindowAssetsState extends State<EditorWindowAssets> {
 }
 
 class CreateAssetCollectionDialog extends StatefulWidget {
-  final EditorContext editorContext;
   final VoidCallback onCreateAssetCollection;
 
-  const CreateAssetCollectionDialog({super.key, required this.editorContext, required this.onCreateAssetCollection});
+  const CreateAssetCollectionDialog({super.key, required this.onCreateAssetCollection});
 
   @override
   State<CreateAssetCollectionDialog> createState() => _CreateAssetCollectionDialogState();
@@ -214,7 +213,7 @@ class _CreateAssetCollectionDialogState extends State<CreateAssetCollectionDialo
                 FilledButton.tonal(
                   onPressed: () {
                     if (name.isEmpty) return;
-                    widget.editorContext.nebula.activeProject!.assetBundle.createAssetCollection(name);
+                    //EditorContext.activeProject!.assetBundle.createAssetCollection(name);
                     widget.onCreateAssetCollection();
                     Navigator.pop(context);
                   },

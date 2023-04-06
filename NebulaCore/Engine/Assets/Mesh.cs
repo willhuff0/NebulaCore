@@ -26,8 +26,8 @@ public class Mesh : FileAsset
         
         const int bytesPerIndex = 2; // UInt16
         
-        dynamic? indexData = _indexCount == null ? null : data.Take((int)_indexCount * bytesPerIndex).ToArray();
-        dynamic? vertexData = _indexCount == null ? data : data.Skip((int)_indexCount * bytesPerIndex).ToArray();
+        var indexData = _indexCount == null ? null : data.Take((int)_indexCount * bytesPerIndex).ToArray();
+        var vertexData = _indexCount == null ? data : data.Skip((int)_indexCount * bytesPerIndex).ToArray();
 
         GL.GenVertexArrays(1, out var vaos);
         var vao = vaos[0];

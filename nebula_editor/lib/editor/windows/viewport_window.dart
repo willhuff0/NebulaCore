@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nebula_editor/widgets/nebula_widgets.dart';
-
-import '../editor_page.dart';
 
 class EditorWindowViewport extends StatefulWidget {
   const EditorWindowViewport({super.key});
@@ -21,6 +18,6 @@ class _EditorWindowViewportState extends State<EditorWindowViewport> {
 
   @override
   Widget build(BuildContext context) {
-    return NebulaViewWeb(key: viewKey, onNebulaEngineInit: (nebula) => Editor.of(context).initContext(nebula));
+    return Placeholder();
   }
 }

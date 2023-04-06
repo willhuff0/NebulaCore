@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nebula_editor/nebula/project.dart';
 
 import 'package:resizable_widget/resizable_widget.dart';
 
@@ -33,6 +34,28 @@ class _EditorState extends State<Editor> {
     super.initState();
   }
 
+  Future<bool> showCloseOpenProjectFirstDialog() async{
+    final result = await showDialog<int?>(context: context, builder: (context) => AlertDialog(
+                          title: Text('Close ${EditorContext.activeProject!.name} before opening another project?'),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context, 0), child: Text('Cancel')),
+                            FilledButton.tonal(onPressed: () => Navigator.pop(context, 1), child: Text('Discard Changes')),
+                            FilledButton(onPressed: () => Navigator.pop(context, 2), child: Text('Save Changes')),
+                          ],
+                        )) ?? 0;
+                        
+                        switch(result) {
+                          case 1:
+                          return true;
+                          case 2:
+  await EditorContext.activeProject!.save();
+  
+                          return true;
+                          default:
+                          return false;
+                        }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +65,7 @@ class _EditorState extends State<Editor> {
           centerTitle: false,
           title: Row(
             children: [
-              Text('Nebula Editor${ready && editorContext.nebula.activeProject != null ? ' - ${editorContext.nebula.activeProject!.name}' : ''}', style: Theme.of(context).textTheme.titleSmall),
+              Text('Nebula Editor${EditorContext.activeProject != null ? ' - ${EditorContext.activeProject!.name}' : ''}', style: Theme.of(context).textTheme.titleSmall),
               SizedBox(width: 12.0),
               MenuAnchor( // Project Anchor
                 style: MenuStyle(visualDensity: VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity)),
@@ -51,17 +74,19 @@ class _EditorState extends State<Editor> {
                     leadingIcon: Icon(Icons.file_copy_rounded, size: 20.0),
                     child: Text('New'),
                     onPressed: () async {
-                      final result = await showDialog<List?>(context: context, builder: (context) => EditorNewProjectDialog());
+                      final result = await showDialog<NbProject?>(context: context, builder: (context) => EditorNewProjectDialog());
                       if (result == null) return;
-                      //await editorContext.createProject(result[0], result[1]);
+                      EditorContext.activeProject = result;
                       setState(() {});
                     },
                   ),
                   MenuItemButton(
                     leadingIcon: Icon(Icons.file_open_rounded, size: 20.0),
                     child: Text('Open'),
-                    onPressed: () {
-                      //EditorContext.openProject();
+                    onPressed: () async {
+                      if (EditorContext.activeProject != null) {
+                        if(await showCloseOpenProjectFirstDialog() == false) return;
+                      }
                     },
                   ),
                   Divider(),
@@ -85,9 +110,9 @@ class _EditorState extends State<Editor> {
                   ),
                   icon: Icon(Icons.folder_rounded, size: 18.0),
                   label: Text('Project'),
-                  onPressed: ready ? () {
+                  onPressed: () {
                     controller.open();
-                  } : null,
+                  },
                 ),
               ),
               MenuAnchor( // Scene Anchor

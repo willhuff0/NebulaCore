@@ -16,6 +16,13 @@ public class AssetBundle
         ImportAssets(json);
     }
 
+    public AssetBundle(Project project)
+    {
+        _project = project;
+        _assetGroups = new Dictionary<string, AssetGroup>();
+        ReloadAssetDefinitions();
+    }
+
     public JsonObject Serialize()
     {
         var json = new JsonObject();

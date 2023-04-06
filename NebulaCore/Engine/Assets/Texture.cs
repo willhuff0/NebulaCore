@@ -20,7 +20,7 @@ public class Texture : FileAsset
 
     public override Task<RuntimeAsset?> Load()
     {
-        dynamic data;
+        byte[] data;
         ImageResult image;
         using (var fileStream = FileAssetOpenRead())
         {

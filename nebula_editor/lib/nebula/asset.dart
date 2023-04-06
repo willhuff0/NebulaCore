@@ -1,18 +1,20 @@
 import 'package:nebula_editor/nebula.dart';
 
 abstract class NbAsset {
+  final String name;
   final String guid;
 
-  NbAsset.deserialize(this.guid, Map<String, dynamic> json);
+  NbAsset.deserialize(this.guid, Map<String, dynamic> json) : name = json['name'] as String;
 
   static NbAsset from(String group, String guid, Map<String, dynamic> json) {
-    return nbTypeMap[group]!(guid, json);
+    return deserializers[group]!(guid, json);
   }
-}
 
-const nbTypeMap = <String, NbAsset Function(String guid, Map<String, dynamic> json)>{
-  'texture': NbTextureAsset.deserialize,
-};
+  static const deserializers = <String, NbAsset Function(String guid, Map<String, dynamic> json)>{
+    'scenes': NbSceneAsset.deserialize,
+    'textures': NbTextureAsset.deserialize,
+  };
+}
 
 abstract class NbFileAsset extends NbAsset {
   final String path;

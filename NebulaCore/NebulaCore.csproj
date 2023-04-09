@@ -32,15 +32,16 @@
 
     <ItemGroup>
       <PackageReference Include="StbImageSharp" Version="2.27.13" />
-      <PackageReference Include="StreamJsonRpc" Version="2.14.24" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\AssimpNet\AssimpNet\AssimpNet.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Engine\Nodes\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="StirlingLabs.Assimp.Net">
+        <HintPath>..\deps\Assimp.Net\AssimpNet\obj\Debug\net7.0\StirlingLabs.Assimp.Net.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

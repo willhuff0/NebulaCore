@@ -74,9 +74,7 @@ public static unsafe class Nebula
         
         var stopwatch = new Stopwatch();
         stopwatch.Start();
-
-        var test = NebulaDebuggerHandler.LoadProject(@"C:\Users\wehuf\home\dev\NebulaCore\TestProject\Test Project.neb");
-
+        
         while (!Glfw.WindowShouldClose(window))
         {
             var inputState = Input.GetState();

@@ -1,0 +1,6 @@
+[submodule "deps/glfw"]
+	path = deps/glfw
+	url = https://github.com/glfw/glfw
+[submodule "deps/Assimp.Net"]
+	path = deps/Assimp.Net
+	url = https://github.com/StirlingLabs/Assimp.Net

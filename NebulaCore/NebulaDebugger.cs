@@ -2,31 +2,38 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Text.Json.Nodes;
 using NebulaCore.Engine;
+using WatsonWebsocket;
 
 namespace NebulaCore;
 
 public static class NebulaDebugger
 {
-    private static HttpListener? _listener;
-    private static WebSocket? _client;
+    private static WatsonWsServer? _server;
 
-    public static async void StartServer(int port = 3590)
+    public static void StartServer(int port = 3590)
     {
-        _listener = new HttpListener();
-        _listener.Prefixes.Add($"http://127.0.0.1:{port}/");
-        _listener.Start();
+        _server = new WatsonWsServer("127.0.0.1", port);
+        _server.MessageReceived += MessageReceived;
+        _server.Start();
 
         Console.WriteLine("Debugger started");
+    }
 
-        while (true)
-        {
-            
-        }
+    private static void MessageReceived(object? sender, MessageReceivedEventArgs args)
+    {
+        
     }
 
     public static void StopServer()
     {
+        if (_server != null)
+        {
+            _server.Stop();
+            _server.Dispose();
+            _server = null;
+        }
         
+        Console.WriteLine("Debugger stopped");
     }
 }
 

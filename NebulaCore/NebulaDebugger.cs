@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.WebSockets;
+using System.Text.Json.Nodes;
 using NebulaCore.Engine;
+using Nerdbank.Streams;
 using StreamJsonRpc;
 
 namespace NebulaCore;
@@ -39,6 +41,7 @@ public static class NebulaDebugger
 
                 if (_client != null) _client.Dispose();
                 _client = webSocketContext.WebSocket;
+                _client.
                 rpc = new JsonRpc(new WebSocketMessageHandler(_client), new NebulaDebuggerHandler());
                 rpc.StartListening();
                 Console.WriteLine($"New debugger connection: {context.Request.RemoteEndPoint}");
@@ -83,11 +86,11 @@ public class NebulaDebuggerHandler
         return project.Serialize().GetValue<Dictionary<string, dynamic>>();
     }
 
-    public static Dictionary<string, dynamic> LoadProject(string path)
+    public static JsonObject LoadProject(string path)
     {
         var project = Project.Open(path);
         Nebula.ActiveProject = project;
-        return project.Serialize().GetValue<Dictionary<string, dynamic>>();
+        return project.Serialize();
     }
 
     public static bool UnloadProject()

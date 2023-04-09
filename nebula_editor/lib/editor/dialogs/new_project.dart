@@ -99,6 +99,7 @@ class _EditorNewProjectDialogState extends State<EditorNewProjectDialog> {
                             print(e);
                             return 'An error occured while trying to create the directory';
                           }
+                          return null;
                         },
                         onSaved: (value) => directory = value!,
                       ),

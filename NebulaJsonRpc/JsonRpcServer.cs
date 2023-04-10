@@ -80,6 +80,9 @@ public class JsonRpcServer
 
     private void _validateRequest(JsonObject request)
     {
+        // TODO
+        return;
+        
         if (!request.ContainsKey("jsonrpc"))
             throw new JsonRpcException(
                 (int)JsonRpcErrorCode.InvalidRequest,

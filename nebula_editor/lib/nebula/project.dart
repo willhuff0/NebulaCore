@@ -40,7 +40,7 @@ class NbProject {
     return NbProject._deserialize(path, await Nebula.peer.sendRequest('CreateAndLoadProject', {'path': path, 'name': name, 'bundleId': bundleId}));
   }
 
-  static Future<bool> unloadProject() async {
+  static Future<void> unloadProject() async {
     return await Nebula.peer.sendRequest('UnloadProject');
   }
 

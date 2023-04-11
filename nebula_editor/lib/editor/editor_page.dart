@@ -1,5 +1,7 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:nebula_editor/nebula/project.dart';
+import 'package:path/path.dart' as p;
 
 import 'package:resizable_widget/resizable_widget.dart';
 
@@ -87,6 +89,16 @@ class _EditorState extends State<Editor> {
                       if (EditorContext.activeProject != null) {
                         if(await showCloseOpenProjectFirstDialog() == false) return;
                       }
+
+                      final path = await FilePicker.platform.pickFiles(
+                          initialDirectory: EditorContext.activeProject != null ? p.dirname(EditorContext.activeProject!.path) : null,
+                          dialogTitle: 'Select Nebula project file',
+                          lockParentWindow: true,
+                        );
+                        if (!mounted || path == null || path.paths.isEmpty) return;
+
+                      EditorContext.activeProject = await NbProject.loadProject(path.paths.first!);
+                      setState(() {});
                     },
                   ),
                   Divider(),
@@ -101,7 +113,9 @@ class _EditorState extends State<Editor> {
                   MenuItemButton(
                     leadingIcon: Icon(Icons.logout_rounded, size: 20.0),
                     child: Text('Close'),
-                    onPressed: () {},
+                    onPressed: () async{
+                      await NbProject.unloadProject();
+                    },
                   ),
                 ],
                 builder: (context, controller, child) => TextButton.icon(

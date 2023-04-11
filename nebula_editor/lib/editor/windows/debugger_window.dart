@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../editor_context.dart';
-import '../editor_page.dart';
 
 class EditorWindowDebugger extends StatefulWidget {
   const EditorWindowDebugger({super.key});
@@ -68,6 +67,26 @@ class _EditorWindowDebuggerState extends State<EditorWindowDebugger> {
                         setState(() {
                           if (!levelFilters.remove(LogLevel.info)) {
                             levelFilters.add(LogLevel.info);
+                          }
+                          filterEntries();
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 100.0,
+                    child: TextButton.icon(
+                      style: ButtonStyle(
+                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0))),
+                        alignment: Alignment.centerLeft,
+                        foregroundColor: MaterialStatePropertyAll(LogLevel.engine.color),
+                      ),
+                      icon: Icon(levelFilters.contains(LogLevel.engine) ? Icons.visibility_rounded : Icons.visibility_off_rounded, size: 20.0),
+                      label: Text('Engine'),
+                      onPressed: () {
+                        setState(() {
+                          if (!levelFilters.remove(LogLevel.engine)) {
+                            levelFilters.add(LogLevel.engine);
                           }
                           filterEntries();
                         });

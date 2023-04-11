@@ -9,6 +9,7 @@ class EditorContext {
   static set activeProject(NbProject? value) {
     _activeProject = value;
     _onProjectLoadedController.add(_activeProject);
+    if (value != null) log('Active project: \'${value.name}\'', level: LogLevel.engine);
   }
 
   static NbScene? _activeScene;
@@ -16,6 +17,7 @@ class EditorContext {
   static set activeScene(NbScene? value) {
     _activeScene = value;
     _onSceneLoadedController.add(_activeScene);
+    if (value != null) log('Active scene: \'${value.name}\'', level: LogLevel.engine);
   }
 
   static final _onLogController = StreamController<LogEntry>.broadcast();
@@ -43,6 +45,7 @@ class LogEntry {
 
 enum LogLevel {
   info('Info', Icons.info_rounded, null),
+  engine('Engine', Icons.settings_rounded, Color(0xFF7E57C2)),
   alert('Alert', Icons.warning_rounded, Color(0xFFFF6F00)),
   error('Error', Icons.error_rounded, Colors.red),
   fatal('Fatal Error', Icons.cancel_rounded, Color(0xFFB71C1C));

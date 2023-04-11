@@ -28,7 +28,7 @@ public static unsafe class Nebula
     
     public static void InitializeEngine()
     {
-        Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
+        Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_VULKAN);
         if (!Glfw.Init())
         {
             Console.WriteLine("Failed to initialize GLFW");
@@ -40,7 +40,7 @@ public static unsafe class Nebula
         Glfw.WindowHint(Glfw.CLIENT_API, Glfw.OPENGL_ES_API);
         Glfw.WindowHint(Glfw.CONTEXT_CREATION_API, Glfw.EGL_CONTEXT_API);
         Glfw.WindowHint(Glfw.CONTEXT_VERSION_MAJOR, 3);
-        Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
+        Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 1);
         Glfw.WindowHint(Glfw.SAMPLES, 4);
         var window = Glfw.CreateWindow(1024, 768, "NebulaCore C#", null, null);
         if (window == null)

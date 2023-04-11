@@ -28,7 +28,7 @@ class Nebula {
 
     _connected = true;
 
-    getEngineInfo().then((info) => EditorContext.log('Initialized Nebula ${info.nebulaVersion}\nAPI: ${info.glVersion}\nDevice: ${info.glRenderer}'));
+    getEngineInfo().then((info) => EditorContext.log('Initialized Nebula ${info.nebulaVersion}\nAPI: ${info.glVersion}\nDevice: ${info.glRenderer}', level: LogLevel.engine));
   }
 
   static Future<void> disconnectFromDebugger() async => await peer.close();

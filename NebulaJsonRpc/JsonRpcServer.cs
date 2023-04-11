@@ -40,9 +40,60 @@ public class JsonRpcServer : IJsonRpcServer
         }
     }
 
-    public void RegisterMethod(string method, Func<JsonNode?, Task<JsonNode?>?> callback)
+    public void RegisterMethod(string method, Func<JsonNode?, JsonNode> callback)
     {
-        _methods.Add(method, callback);
+        _methods.Add(method, param => Task.FromResult<JsonNode?>(callback(param)));
+    }
+
+    public void RegisterMethod(string method, Func<JsonNode?, Task<JsonNode>> callback)
+    {
+        _methods.Add(method, callback!);
+    }
+
+    public void RegisterMethod(string method, Func<JsonNode?, Task> callback)
+    {
+        _methods.Add(method, async param =>
+        {
+            await callback(param);
+            return null;
+        });
+    }
+
+    public void RegisterMethod(string method, Func<JsonNode> callback)
+    {
+        _methods.Add(method, _ => Task.FromResult<JsonNode?>(callback()));
+    }
+
+    public void RegisterMethod(string method, Func<Task<JsonNode>> callback)
+    {
+        _methods.Add(method, _ => callback()!);
+    }
+
+    public void RegisterMethod(string method, Func<Task> callback)
+    {
+        _methods.Add(method, async _ =>
+        {
+            await callback();
+            return null;
+        });
+    }
+
+    public void RegisterMethod(string method, Action<JsonNode?> callback)
+    {
+        _methods.Add(method, param =>
+        {
+            callback(param);
+            return Task.FromResult<JsonNode?>(null);
+        });
+    }
+
+    public void RegisterMethod(string method, Action callback)
+    {
+        _methods.Add(method, _ =>
+        {
+            callback();
+            return Task.FromResult<JsonNode?>(null);
+        });
     }
 
     private async Task<JsonObject?> _handleRequest(JsonObject request)

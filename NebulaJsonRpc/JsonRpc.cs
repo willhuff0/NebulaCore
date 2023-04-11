@@ -16,7 +16,14 @@ public interface IJsonRpcNetwork
 
 public interface IJsonRpcServer : IJsonRpcNetwork
 {
-    public void RegisterMethod(string method, Func<JsonNode?, Task<JsonNode?>?> callback);
+    public void RegisterMethod(string method, Func<JsonNode?, JsonNode> callback);
+    public void RegisterMethod(string method, Func<JsonNode?, Task<JsonNode>> callback);
+    public void RegisterMethod(string method, Func<JsonNode?, Task> callback);
+    public void RegisterMethod(string method, Func<JsonNode> callback);
+    public void RegisterMethod(string method, Func<Task<JsonNode>> callback);
+    public void RegisterMethod(string method, Func<Task> callback);
+    public void RegisterMethod(string method, Action<JsonNode?> callback);
+    public void RegisterMethod(string method, Action callback);
 }
 
 public interface IJsonRpcClient : IJsonRpcNetwork

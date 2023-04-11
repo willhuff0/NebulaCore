@@ -4,50 +4,55 @@ namespace NebulaJsonRpc;
 
 public class JsonRpcException : Exception
 {
-    public int Code;
-    public string Message;
-    public object? Data;
+    public readonly int Code;
+    public new readonly string Message;
+    public new readonly JsonObject? Data;
     
-    public JsonRpcException(int code, string message, object? data = null) : base(message)
+    public JsonRpcException(int code, string message, JsonObject? data = null) : base(message)
     {
         Code = code;
         Message = message;
         Data = data;
     }
 
-    public JsonObject Serialize(object? request)
+    public JsonRpcException(JsonObject json)
     {
-        dynamic modifiedData;
-        if (Data is Dictionary<string, dynamic?> data && data.ContainsKey("request"))
+        Code = json["code"]!.GetValue<int>();
+        Message = json["message"]!.GetValue<string>();
+        Data = json["data"]?.AsObject();
+    }
+
+    public JsonObject Serialize(JsonObject request)
+    {
+        JsonObject data;
+        if (Data != null && !Data.ContainsKey("request"))
         {
-            modifiedData = data;
-            modifiedData["request"] = request;
-        }
-        else if (Data == null)
-        {
-            modifiedData = new Dictionary<string, dynamic?>() { {"request", request} };
+            data = Data;
+            data["request"] = request;
         }
         else
         {
-            modifiedData = Data;
+            data = Data ?? new JsonObject() { { "request", request } };
         }
 
-        var id = request is Dictionary<string, dynamic?> _request ? _request["id"] : null;
-        if (id is not string && id is not int) id = null;
-        return new JsonObject()
+        var result = new JsonObject()
         {
-            {
-                "jsonrpc", "2.0"
-            },
-            {
-                "error", new JsonObject()
+            { "jsonrpc", "2.0" },
+            { "error", new JsonObject() 
                 {
                     { "code", Code },
                     { "message", Message },
-                    { "data", modifiedData },
+                    { "data", data },
                 }
             },
-            {"id", id},
         };
+        
+        var id = request["id"]?.GetValue<int>();
+        if (id != null)
+        {
+            result.Add("id", id);
+        }
+
+        return result;
     }
 }

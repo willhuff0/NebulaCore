@@ -1,6 +1,6 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:nebula_editor/nebula/project.dart';
+import 'package:nebula_editor/nebula.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:resizable_widget/resizable_widget.dart';
@@ -46,16 +46,15 @@ class _EditorState extends State<Editor> {
                           ],
                         )) ?? 0;
                         
-                        switch(result) {
-                          case 1:
-                          return true;
-                          case 2:
-  await EditorContext.activeProject!.save();
-  
-                          return true;
-                          default:
-                          return false;
-                        }
+    switch(result) {
+      case 1:
+        return true;
+      case 2:
+        await NbProject.save();
+        return true;
+      default:
+        return false;
+    }
   }
 
   @override
@@ -69,13 +68,18 @@ class _EditorState extends State<Editor> {
             children: [
               Text('Nebula Editor${EditorContext.activeProject != null ? ' - ${EditorContext.activeProject!.name}' : ''}', style: Theme.of(context).textTheme.titleSmall),
               SizedBox(width: 12.0),
-              MenuAnchor( // Project Anchor
+              MenuAnchor(
                 style: MenuStyle(visualDensity: VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity)),
                 menuChildren: [
                   MenuItemButton(
                     leadingIcon: Icon(Icons.file_copy_rounded, size: 20.0),
                     child: Text('New'),
                     onPressed: () async {
+                      if (EditorContext.activeProject != null) {
+                        if(await showCloseOpenProjectFirstDialog() == false) return;
+                      }
+
+                      if (!mounted) return;
                       final result = await showDialog<NbProject?>(context: context, builder: (context) => EditorNewProjectDialog());
                       if (result == null) return;
                       EditorContext.activeProject = result;
@@ -104,18 +108,18 @@ class _EditorState extends State<Editor> {
                   Divider(),
                   MenuItemButton(
                     leadingIcon: Icon(Icons.save_rounded, size: 20.0),
-                    child: Text('Save All'),
-                    onPressed: () {
-                      //EditorContext.nebula.activeProject?.saveProjectFile();
+                    onPressed: EditorContext.activeProject == null ? null : () {
+                      NbProject.save();
                     },
+                    child: Text('Save All'),
                   ),
                   Divider(),
                   MenuItemButton(
                     leadingIcon: Icon(Icons.logout_rounded, size: 20.0),
-                    child: Text('Close'),
-                    onPressed: () async{
+                    onPressed: EditorContext.activeProject == null ? null : () async{
                       await NbProject.unloadProject();
                     },
+                    child: Text('Close'),
                   ),
                 ],
                 builder: (context, controller, child) => TextButton.icon(
@@ -129,7 +133,7 @@ class _EditorState extends State<Editor> {
                   },
                 ),
               ),
-              MenuAnchor( // Scene Anchor
+              MenuAnchor(
                 style: MenuStyle(visualDensity: VisualDensity(horizontal: VisualDensity.minimumDensity, vertical: VisualDensity.minimumDensity)),
                 menuChildren: [
                   MenuItemButton(
@@ -140,8 +144,10 @@ class _EditorState extends State<Editor> {
                   Divider(),
                   MenuItemButton(
                     leadingIcon: Icon(Icons.save_rounded, size: 20.0),
+                    onPressed: EditorContext.activeScene == null ? null : () {
+                      NbScene
+                    },
                     child: Text('Save Scene'),
-                    onPressed: () {},
                   ),
                 ],
                 builder: (context, controller, child) => TextButton.icon(
@@ -150,7 +156,7 @@ class _EditorState extends State<Editor> {
                   ),
                   icon: Icon(Icons.landscape_rounded, size: 20.0),
                   label: Text('Scene'),
-                  onPressed: () {
+                  onPressed: EditorContext.activeProject == null ? null : () {
                     controller.open();
                   },
                 ),

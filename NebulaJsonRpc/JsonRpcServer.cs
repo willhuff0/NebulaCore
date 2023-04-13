@@ -9,7 +9,7 @@ public class JsonRpcServer : IJsonRpcServer
 
     private readonly Dictionary<string, Func<JsonNode?, Task<JsonNode?>?>> _methods = new();
 
-    public JsonRpcServer(EventHandler<JsonObject> sendNetworkMessage, bool useValidation = false)
+    public JsonRpcServer(EventHandler<SendNetworkMessageEventArgs> sendNetworkMessage, bool useValidation = false)
     {
         SendNetworkMessage = sendNetworkMessage;
         _useValidation = useValidation;
@@ -29,23 +29,23 @@ public class JsonRpcServer : IJsonRpcServer
         IsOpen = false;
     }
 
-    public event EventHandler<JsonObject> SendNetworkMessage;
-    public async void ReceiveNetworkMessage(JsonObject message)
+    public event EventHandler<SendNetworkMessageEventArgs> SendNetworkMessage;
+    public async void ReceiveNetworkMessage(SendNetworkMessageEventArgs args)
     {
         if (!IsOpen) return;
-        var result = await _handleRequest(message);
+        var result = await _handleRequest(args.Message);
         if (IsOpen && result != null)
         {
-            SendNetworkMessage(this, result);
+            SendNetworkMessage(this, new SendNetworkMessageEventArgs(result, args.Client));
         }
     }
 
-    public void RegisterMethod(string method, Func<JsonNode?, JsonNode> callback)
+    public void RegisterMethod(string method, Func<JsonNode?, JsonNode?> callback)
     {
         _methods.Add(method, param => Task.FromResult<JsonNode?>(callback(param)));
     }
 
-    public void RegisterMethod(string method, Func<JsonNode?, Task<JsonNode>> callback)
+    public void RegisterMethod(string method, Func<JsonNode?, Task<JsonNode?>> callback)
     {
         _methods.Add(method, callback!);
     }
@@ -59,12 +59,12 @@ public class JsonRpcServer : IJsonRpcServer
         });
     }
 
-    public void RegisterMethod(string method, Func<JsonNode> callback)
+    public void RegisterMethod(string method, Func<JsonNode?> callback)
     {
         _methods.Add(method, _ => Task.FromResult<JsonNode?>(callback()));
     }
 
-    public void RegisterMethod(string method, Func<Task<JsonNode>> callback)
+    public void RegisterMethod(string method, Func<Task<JsonNode?>> callback)
     {
         _methods.Add(method, _ => callback()!);
     }

@@ -44,7 +44,11 @@ class NbProject {
     return await Nebula.peer.sendRequest('UnloadProject');
   }
 
-  Future<void> save() async {
+  static Future<void> save() async {
     return await Nebula.peer.sendRequest('SaveProject');
+  }
+
+  static Future<bool> hasChanges() async {
+    return await Nebula.peer.sendRequest('HasChanges');
   }
 }

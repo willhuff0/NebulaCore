@@ -46,13 +46,13 @@ public class RuntimeMaterial : RuntimeAsset
 {
     private Material? _asset;
     
-    private RuntimeRenderShader _shader;
-    private Dictionary<string, RuntimeTexture> _textures;
+    private RuntimeRenderShader _shader = null!;
+    private Dictionary<string, RuntimeTexture> _textures = null!;
     private Dictionary<string, object> _params;
 
-    public RuntimeMaterial(Project project, Material asset, Dictionary<string, object> _params) : base(project)
+    public RuntimeMaterial(Project project, Material from, Dictionary<string, object> _params) : base(project, from)
     {
-        _asset = asset;
+        _asset = from;
         this._params = _params;
     }
 

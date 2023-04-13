@@ -20,26 +20,38 @@ public abstract class Asset
 {
     protected Project Project;
     public string Name;
+    protected internal List<Guid> AssociatedCollections;
 
     protected Asset(Project project, JsonNode json)
     {
         Project = project;
         Name = json["name"]!.GetValue<string>();
+        AssociatedCollections = json["collections"]?.GetValue<List<Guid>>() ?? new List<Guid>();
     }
+
+    public bool IsAssociated(Guid collection) => AssociatedCollections.Contains(collection);
+    public void AddAssociation(Guid collection) => AssociatedCollections.Add(collection);
+    public void RemoveAssociation(Guid collection) => AssociatedCollections.Remove(collection);
     
     public abstract JsonObject Serialize();
-    
+
     public abstract Task<RuntimeAsset?> Load();
 }
 
 public abstract class RuntimeAsset
 {
     protected Project Project;
+    private List<Guid> _associatedCollections;
     
-    protected RuntimeAsset(Project project)
+    protected RuntimeAsset(Project project, Asset from)
     {
         Project = project;
+        _associatedCollections = from.AssociatedCollections;
     }
+    
+    public bool IsAssociated(Guid collection) => _associatedCollections.Contains(collection);
+    public void AddAssociation(Guid collection) => _associatedCollections.Add(collection);
+    public void RemoveAssociation(Guid collection) => _associatedCollections.Remove(collection);
     
     public virtual Task AssignRuntimeReferences() => Task.CompletedTask;
     

@@ -74,7 +74,7 @@ public class Node : Asset
             runtimeBehaviors.Add((behaviorInstance as Behavior)!);
         }
         
-        var runtimeNode = new RuntimeNode(Project, new List<RuntimeNode>(_children.Length), runtimeBehaviors);
+        var runtimeNode = new RuntimeNode(Project, this, new List<RuntimeNode>(_children.Length), runtimeBehaviors);
         NodeWorldComponent worldComponent = new NodeWorldComponent(
             runtimeNode, 
             new Vector3(_position[0], _position[1], _position[2]), 
@@ -102,7 +102,7 @@ public class RuntimeNode : RuntimeAsset
     public List<RuntimeNode> Children;
     public List<Behavior> Behaviors;
     
-    public RuntimeNode(Project project, List<RuntimeNode>? children = null, List<Behavior>? behaviors = null) : base(project)
+    public RuntimeNode(Project project, Asset from, List<RuntimeNode>? children = null, List<Behavior>? behaviors = null) : base(project, from)
     {
         Children = children ?? new List<RuntimeNode>();
         Behaviors = behaviors ?? new List<Behavior>();

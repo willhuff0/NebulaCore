@@ -20,4 +20,8 @@ class NbScene {
   Future<void> unload() async {
     await Nebula.peer.sendRequest('UnloadScene', {'guid': guid});
   }
+
+  Future<void> save() async {
+    await Nebula.peer.sendRequest('SaveScene', {'guid': guid});
+  }
 }

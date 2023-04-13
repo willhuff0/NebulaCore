@@ -7,7 +7,7 @@ public class JsonRpcPeer : IJsonRpcServer, IJsonRpcClient
     private readonly JsonRpcServer _server;
     private readonly JsonRpcClient _client;
     
-    public JsonRpcPeer(EventHandler<JsonObject> sendNetworkMessage, bool useValidation = false)
+    public JsonRpcPeer(EventHandler<SendNetworkMessageEventArgs> sendNetworkMessage, bool useValidation = false)
     {
         SendNetworkMessage = sendNetworkMessage;
 
@@ -33,24 +33,24 @@ public class JsonRpcPeer : IJsonRpcServer, IJsonRpcClient
         _client.Close();
     }
 
-    public event EventHandler<JsonObject> SendNetworkMessage;
-    public void ReceiveNetworkMessage(JsonObject message)
+    public event EventHandler<SendNetworkMessageEventArgs> SendNetworkMessage;
+    public void ReceiveNetworkMessage(SendNetworkMessageEventArgs args)
     {
-        if (message.ContainsKey("result") || message.ContainsKey("error"))
+        if (args.Message.ContainsKey("result") || args.Message.ContainsKey("error"))
         {
-            _client.ReceiveNetworkMessage(message);
+            _client.ReceiveNetworkMessage(args);
         }
         else
         {
-            _server.ReceiveNetworkMessage(message);
+            _server.ReceiveNetworkMessage(args);
         }
     }
 
-    public void RegisterMethod(string method, Func<JsonNode?, JsonNode> callback) => _server.RegisterMethod(method, callback);
-    public void RegisterMethod(string method, Func<JsonNode?, Task<JsonNode>> callback) => _server.RegisterMethod(method, callback);
+    public void RegisterMethod(string method, Func<JsonNode?, JsonNode?> callback) => _server.RegisterMethod(method, callback);
+    public void RegisterMethod(string method, Func<JsonNode?, Task<JsonNode?>> callback) => _server.RegisterMethod(method, callback);
     public void RegisterMethod(string method, Func<JsonNode?, Task> callback) => _server.RegisterMethod(method, callback);
-    public void RegisterMethod(string method, Func<JsonNode> callback) => _server.RegisterMethod(method, callback);
-    public void RegisterMethod(string method, Func<Task<JsonNode>> callback) => _server.RegisterMethod(method, callback);
+    public void RegisterMethod(string method, Func<JsonNode?> callback) => _server.RegisterMethod(method, callback);
+    public void RegisterMethod(string method, Func<Task<JsonNode?>> callback) => _server.RegisterMethod(method, callback);
     public void RegisterMethod(string method, Func<Task> callback) => _server.RegisterMethod(method, callback);
     public void RegisterMethod(string method, Action<JsonNode?> callback) => _server.RegisterMethod(method, callback);
     public void RegisterMethod(string method, Action callback) => _server.RegisterMethod(method, callback);

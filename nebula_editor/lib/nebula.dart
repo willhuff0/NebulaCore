@@ -19,7 +19,11 @@ class Nebula {
     _socket = WebSocketChannel.connect(Uri.parse('ws://127.0.0.1:$port'));
     peer = Peer(_socket.cast<String>());
 
-    peer.registerMethod('OnError', (Parameters params) {});
+    peer.registerMethod('Log', (Parameters params) {
+      EditorContext.log(params['message'].asString, level: LogLevel.values[params['level'].asIntOr(0)]);
+    });
+
+    peer.registerMethod('AssetBundleUpdate', (Parameters params) {});
 
     peer.listen().then((value) async {
       _connected = false;

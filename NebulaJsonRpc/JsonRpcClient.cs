@@ -10,7 +10,7 @@ public class JsonRpcClient : IJsonRpcClient
     private int _nextId = 0;
     private readonly Dictionary<int, TaskCompletionSource<JsonNode>> _pendingRequests = new();
 
-    public JsonRpcClient(EventHandler<JsonObject> sendNetworkMessage, bool useValidation = false)
+    public JsonRpcClient(EventHandler<SendNetworkMessageEventArgs> sendNetworkMessage, bool useValidation = false)
     {
         SendNetworkMessage = sendNetworkMessage;
         _useValidation = useValidation;
@@ -30,11 +30,11 @@ public class JsonRpcClient : IJsonRpcClient
         IsOpen = false;
     }
 
-    public event EventHandler<JsonObject> SendNetworkMessage;
-    public void ReceiveNetworkMessage(JsonObject message)
+    public event EventHandler<SendNetworkMessageEventArgs> SendNetworkMessage;
+    public void ReceiveNetworkMessage(SendNetworkMessageEventArgs args)
     {
         if (!IsOpen) return;
-        _handleResponse(message);
+        _handleResponse(args.Message);
     }
 
     public Task<JsonNode> SendRequest(string method, params object[] param)
@@ -69,7 +69,7 @@ public class JsonRpcClient : IJsonRpcClient
             message.Add("params", JsonValue.Create(param));
         }
 
-        SendNetworkMessage(this, message);
+        SendNetworkMessage(this, new SendNetworkMessageEventArgs(message));
     }
 
     private void _handleResponse(JsonObject response)

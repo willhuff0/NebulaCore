@@ -55,7 +55,7 @@ public class Mesh : FileAsset
         
         GL.BindVertexArray(0);
 
-        return Task.FromResult<RuntimeAsset?>(new RuntimeMesh(Project, _indexCount != null ? (int)_indexCount : (int)((long)vertexData.LongLength / 32 /* 8 * sizeof(float) */), vao, ebo, vbo));
+        return Task.FromResult<RuntimeAsset?>(new RuntimeMesh(Project, this, _indexCount != null ? (int)_indexCount : (int)((long)vertexData.LongLength / 32 /* 8 * sizeof(float) */), vao, ebo, vbo));
     }
 }
 
@@ -66,7 +66,7 @@ public class RuntimeMesh : RuntimeAsset
     private uint? _ebo;
     private uint _vbo;
     
-    public RuntimeMesh(Project project, int count, uint vao, uint? ebo, uint vbo) : base(project)
+    public RuntimeMesh(Project project, Asset from, int count, uint vao, uint? ebo, uint vbo) : base(project, from)
     {
         _count = count;
         _vao = vao;

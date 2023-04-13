@@ -117,7 +117,7 @@ public class RenderShader : FileAsset
             uniformLocations[uniformName] = GL.GetUniformLocation(program, uniformName);
         }
 
-        return Task.FromResult<RuntimeAsset?>(new RuntimeRenderShader(Project, program, uniformLocations));
+        return Task.FromResult<RuntimeAsset?>(new RuntimeRenderShader(Project, this, program, uniformLocations));
     }
 }
 
@@ -126,7 +126,7 @@ public class RuntimeRenderShader : RuntimeAsset
     private readonly uint _program;
     private readonly Dictionary<string, int> _uniformLocations;
 
-    public RuntimeRenderShader(Project project, uint program, Dictionary<string, int> uniformLocations) : base(project)
+    public RuntimeRenderShader(Project project, Asset from, uint program, Dictionary<string, int> uniformLocations) : base(project, from)
     {
         _program = program;
         _uniformLocations = uniformLocations;

@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using NebulaCore.Engine;
+using NebulaCore.Engine.Assets;
 using NebulaJsonRpc;
 using WatsonWebsocket;
 
@@ -27,13 +28,14 @@ public static class NebulaDebugger
     {
         if (_peer == null) return;
         _client = args.Client.Guid;
-        _peer.ReceiveNetworkMessage(JsonNode.Parse(args.Data)!.AsObject());
+        _peer.ReceiveNetworkMessage(new SendNetworkMessageEventArgs(JsonNode.Parse(args.Data)!.AsObject(), args.Client.Guid));
     }
 
-    private static void SendMessage(object? sender, JsonObject message)
+    private static void SendMessage(object? sender, SendNetworkMessageEventArgs args)
     {
-        if (_server == null || _client == null) return;
-        _server.SendAsync((Guid)_client, message.ToJsonString());
+        var client = args.Client ?? _client;
+        if (_server == null || client == null) return;
+        _server.SendAsync((Guid)client, args.Message.ToJsonString());
     }
 
     public static void StopServer()
@@ -64,6 +66,7 @@ public static class NebulaDebugger
             { "glVersion", Nebula.GlVersion },
             { "glRenderer", Nebula.GlRenderer },
         });
+        
 
         server.RegisterMethod("CreateAndLoadProject", param =>
         {
@@ -82,5 +85,17 @@ public static class NebulaDebugger
         server.RegisterMethod("UnloadProject", () => Nebula.ActiveProject = null);
 
         server.RegisterMethod("SaveProject", () => Nebula.ActiveProject?.Save());
+        
+        server.RegisterMethod("HasChanges", () => false);
+        
+        
+        server.RegisterMethod("LoadScene", async param =>
+        {
+            var scene = Nebula.ActiveProject!.Bundle.GetAsset<Scene>("scenes", Guid.Parse(param!["guid"]!.GetValue<string>()));
+            if (scene == null) return null;
+            var runtimeScene = await scene.Load();
+            if (runtimeScene == null) return null;
+            return runtimeScene
+        });
     }
 }

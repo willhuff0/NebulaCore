@@ -45,7 +45,7 @@ public class Texture : FileAsset
         
         GL.BindTexture(GL.TEXTURE_2D, 0);
 
-        return Task.FromResult<RuntimeAsset?>(new RuntimeTexture(Project, texture));
+        return Task.FromResult<RuntimeAsset?>(new RuntimeTexture(Project, this, texture));
     }
 }
 
@@ -53,7 +53,7 @@ public class RuntimeTexture : RuntimeAsset
 {
     private uint _texture;
     
-    public RuntimeTexture(Project project, uint texture) : base(project)
+    public RuntimeTexture(Project project, Asset from, uint texture) : base(project, from)
     {
         _texture = texture;
     }

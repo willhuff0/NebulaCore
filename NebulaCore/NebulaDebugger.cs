@@ -93,9 +93,9 @@ public static class NebulaDebugger
         {
             var scene = Nebula.ActiveProject!.Bundle.GetAsset<Scene>("scenes", Guid.Parse(param!["guid"]!.GetValue<string>()));
             if (scene == null) return null;
-            var runtimeScene = await scene.Load();
+            var runtimeScene = (await scene.Load()) as RuntimeScene;
             if (runtimeScene == null) return null;
-            return runtimeScene
+            return runtimeScene.Serialize();
         });
     }
 }

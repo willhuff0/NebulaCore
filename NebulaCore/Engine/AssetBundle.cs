@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Text.Json.Nodes;
-using Guid = System.Guid;
 
 namespace NebulaCore.Engine;
 
@@ -8,13 +7,13 @@ public class AssetBundle
 {
     private Project _project;
     private Dictionary<string, AssetGroup> _groups;
-    private Dictionary<Guid, int> _collections;
+    //private Dictionary<Guid, int> _collections;
 
     public AssetBundle(Project project, JsonObject json)
     {
         _project = project;
         _groups = new Dictionary<string, AssetGroup>();
-        _collections = json["collections"]?.GetValue<Dictionary<string, int>?>()?.ToDictionary(pair => Guid.Parse(pair.Key), pair => pair.Value) ?? new Dictionary<Guid, int>();
+        //_collections = json["collections"]?.GetValue<Dictionary<string, int>?>()?.ToDictionary(pair => Guid.Parse(pair.Key), pair => pair.Value) ?? new Dictionary<Guid, int>();
         ReloadAssetDefinitions();
         ImportAssets(json);
     }
@@ -23,18 +22,29 @@ public class AssetBundle
     {
         _project = project;
         _groups = new Dictionary<string, AssetGroup>();
-        _collections = new Dictionary<Guid, int>();
+        //_collections = new Dictionary<Guid, int>();
         ReloadAssetDefinitions();
     }
 
     public JsonObject Serialize()
     {
         var json = new JsonObject();
-        var groups = json["groups"] = new JsonObject();
-        foreach (var assetGroup in _groups)
+
+        //_collections = _collections.ToDictionary(pair => pair.Key, _ => 0);
+
+        var groups = new JsonObject();
+        foreach (var (groupKey, group) in _groups)
         {
-            groups[assetGroup.Key] = assetGroup.Value.Serialize();
+            groups.Add(groupKey, group.Serialize());
         }
+        json.Add("groups", groups);
+
+        // var collections = new JsonObject();
+        // foreach (var (collectionKey, collectionCount) in _collections)
+        // {
+        //     collections.Add(collectionKey.ToString(), collectionCount);
+        // }
+        // json.Add("collections", collections);
 
         return json;
     }
@@ -127,18 +137,42 @@ public class AssetGroup
     public JsonObject Serialize()
     {
         var json = new JsonObject();
-        foreach (var asset in _assets)
+        foreach (var (assetKey, asset) in _assets)
         {
-            json[asset.Key.ToString()] = asset.Value.Serialize();
+            json.Add(assetKey.ToString(), asset.Serialize());
         }
-
         return json;
     }
 
     public void SetAssetDefinition(ConstructorInfo constructor) => _constructor = constructor;
-    
-    public Asset? GetAsset(Guid guid) => _assets[guid];
-    public RuntimeAsset? GetRuntimeAsset(Guid guid) => _runtimeAssets[guid];
+
+    public Asset? GetAsset(Guid guid)
+    {
+        if (_assets.TryGetValue(guid, out var asset))
+        {
+            return asset;
+        }
+
+        Console.WriteLine($"Tried to get an asset that does not exist: {guid}");
+        return null;
+    }
+
+    public async Task<RuntimeAsset?> GetRuntimeAsset(Guid guid)
+    {
+        if (_runtimeAssets.TryGetValue(guid, out var runtimeAsset))
+        {
+            return runtimeAsset;
+        }
+
+        if (_assets.TryGetValue(guid, out var asset))
+        {
+            Console.WriteLine($"Tried to get a runtime asset that is not loaded: {guid}");
+            return await asset.Load();
+        }
+
+        Console.WriteLine($"Tried to get a runtime asset that does not exist: {guid}");
+        return null;
+    }
 
     public int ImportAssets(JsonObject json)
     {

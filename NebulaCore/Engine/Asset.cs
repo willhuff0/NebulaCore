@@ -25,23 +25,33 @@ public abstract class Asset
     protected Asset(Project project, JsonNode json)
     {
         Project = project;
-        Name = json["name"]!.GetValue<string>();
-        AssociatedCollections = json["collections"]?.GetValue<List<Guid>>() ?? new List<Guid>();
+        Name = json["asset"]!["name"]!.GetValue<string>();
+        AssociatedCollections = json["asset"]!["associatedCollections"]?.GetValue<List<Guid>>() ?? new List<Guid>();
     }
 
     public bool IsAssociated(Guid collection) => AssociatedCollections.Contains(collection);
     public void AddAssociation(Guid collection) => AssociatedCollections.Add(collection);
     public void RemoveAssociation(Guid collection) => AssociatedCollections.Remove(collection);
-    
-    public abstract JsonObject Serialize();
+
+    public virtual JsonObject Serialize()
+    {
+        var asset = new JsonObject();
+        asset.Add("name", Name);
+        if (AssociatedCollections.Count > 0) asset.Add("associatedCollections", JsonValue.Create(AssociatedCollections.Select(guid => guid.ToString())));
+        
+        var json = new JsonObject();
+        json.Add("asset", asset);
+        
+        return json;
+    }
 
     public abstract Task<RuntimeAsset?> Load();
 }
 
 public abstract class RuntimeAsset
 {
-    protected Project Project;
-    private List<Guid> _associatedCollections;
+    protected readonly Project Project;
+    private readonly List<Guid> _associatedCollections;
     
     protected RuntimeAsset(Project project, Asset from)
     {
@@ -67,10 +77,12 @@ public abstract class FileAsset : Asset
         _path = json["path"]!.GetValue<string>();
     }
 
-    public override JsonObject Serialize() => new JsonObject()
+    public override JsonObject Serialize()
     {
-        { "path", _path }
-    };
+        var json = base.Serialize();
+        json.Add("path", _path);
+        return json;
+    }
 
     protected string AbsolutePath => Path.Join(Project.Root, _path);
 
@@ -92,10 +104,12 @@ public abstract class MemoryAsset : Asset
         _data = Convert.FromBase64String(json["data"]!.GetValue<string>());
     }
 
-    public override JsonObject Serialize() => new JsonObject()
+    public override JsonObject Serialize()
     {
-        { "data", Convert.ToBase64String(_data) }
-    };
+        var json = base.Serialize();
+        json.Add("data", Convert.ToBase64String(_data));
+        return json;
+    }
 
     protected byte[] MemoryAssetGetBytes() => _data;
     protected void MemoryAssetSetBytes(byte[] newData) => _data = newData;
@@ -119,9 +133,9 @@ public abstract class FileOrMemoryAsset : Asset
 
     public override JsonObject Serialize()
     {
-        var json = new JsonObject();
-        if (_data != null) json["data"] = JsonValue.Create(_data);
-        if (_path != null) json["path"] = JsonValue.Create(_path);
+        var json = base.Serialize();
+        if (_data != null) json.Add("data", JsonValue.Create(_data));
+        if (_path != null) json.Add("path", JsonValue.Create(_path));
         return json;
     }
     

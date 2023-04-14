@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Text.Json.Nodes;
 
 namespace NebulaCore.Engine.Assets;
@@ -16,25 +17,51 @@ public class Scene : Asset
 
     public override JsonObject Serialize()
     {
-        throw new NotImplementedException();
+        var json = new JsonObject();
+        if (_roots.Count > 0)
+        {
+            json["roots"] = JsonValue.Create(_roots.Select(node => node.Serialize()));
+        }
+        if (_collections != null && _collections.Count > 0)
+        {
+            json["collections"] = JsonValue.Create(_collections.Select(guid => guid.ToString()));
+        }
+        return json;
     }
 
     public override async Task<RuntimeAsset?> Load()
     {
         if (_collections != null) await Task.WhenAll(_collections.Select(value => Project.Bundle.Load(value)));
         else await Project.Bundle.Load();
-        var runtimeRoots = (await Task.WhenAll(_roots.Select(node => node.Load()))).Where(value => value != null);
-        return new RuntimeScene(Project, this, )
+        var runtimeRoots = new List<RuntimeNode>();
+        await Task.WhenAll(_roots.Select(async node =>
+        {
+            var runtimeRoot = await node.Load();
+            if (runtimeRoot != null) runtimeRoots.Add((RuntimeNode)runtimeRoot);
+        }));
+        return new RuntimeScene(Project, this, runtimeRoots);
     }
 }
 
 public class RuntimeScene : RuntimeAsset
 {
-    private List<RuntimeNode> _roots;
+    public readonly String Name;
+    private readonly List<RuntimeNode> _roots;
+
+    public ReadOnlyCollection<RuntimeNode> Roots => new ReadOnlyCollection<RuntimeNode>(_roots);
 
     public RuntimeScene(Project project, Asset from, List<RuntimeNode> roots) : base(project, from)
     {
+        Name = from.Name;
         _roots = roots;
+    }
+
+    public JsonObject Serialize()
+    {
+        var json = new JsonObject();
+        json.Add("name", Name);
+        json.Add("roots", JsonValue.Create(_roots.Select(runtimeNode => runtimeNode.Serialize())));
+        return json;
     }
     
     public async Task Load()

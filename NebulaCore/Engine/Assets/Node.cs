@@ -8,7 +8,7 @@ namespace NebulaCore.Engine.Assets;
 [AssetDefinition("nodes")]
 public class Node : Asset
 {
-    private Node[] _children;
+    private List<Node> _children;
     private Dictionary<Guid, Dictionary<string, object>> _behaviors;
     private float[] _position;
     private float[] _rotation;
@@ -16,7 +16,7 @@ public class Node : Asset
     
     public Node(Project project, JsonNode json) : base(project, json)
     {
-        _children = json["children"]?.AsArray().Select((value) => new Node(Project, value!)).ToArray() ?? Array.Empty<Node>();
+        _children = json["children"]?.AsArray().Select((value) => new Node(Project, value!)).ToList() ?? new List<Node>();
         _behaviors = new Dictionary<Guid, Dictionary<string, object>>();
         var jsonBehaviors = json["textures"]?.AsObject();
         if (jsonBehaviors != null)
@@ -41,7 +41,7 @@ public class Node : Asset
     public override JsonObject Serialize()
     {
         var json = new JsonObject();
-        if (_children.Length > 0)
+        if (_children.Count > 0)
         {
             var jsonChildren = new JsonArray();
             foreach (var child in _children) jsonChildren.Add(child.Serialize());
@@ -74,7 +74,7 @@ public class Node : Asset
             runtimeBehaviors.Add((behaviorInstance as Behavior)!);
         }
         
-        var runtimeNode = new RuntimeNode(Project, this, new List<RuntimeNode>(_children.Length), runtimeBehaviors);
+        var runtimeNode = new RuntimeNode(Project, this, new List<RuntimeNode>(_children.Count), runtimeBehaviors);
         NodeWorldComponent worldComponent = new NodeWorldComponent(
             runtimeNode, 
             new Vector3(_position[0], _position[1], _position[2]), 
@@ -97,6 +97,7 @@ public class Node : Asset
 
 public class RuntimeNode : RuntimeAsset
 {
+    public readonly String Name;
     public NodeWorldComponent WorldComponent = null!;
     public RuntimeNode? Parent;
     public List<RuntimeNode> Children;
@@ -104,8 +105,23 @@ public class RuntimeNode : RuntimeAsset
     
     public RuntimeNode(Project project, Asset from, List<RuntimeNode>? children = null, List<Behavior>? behaviors = null) : base(project, from)
     {
+        Name = from.Name;
         Children = children ?? new List<RuntimeNode>();
         Behaviors = behaviors ?? new List<Behavior>();
+    }
+
+    public virtual JsonObject Serialize()
+    {
+        var node = new JsonObject();
+        node.Add("name", Name);
+        node.Add("worldComponent", WorldComponent.Serialize());
+        
+        var json = new JsonObject();
+        json.Add("node", node);
+        json.Add("children", JsonValue.Create(Children.Select(runtimeNode => runtimeNode.Serialize())));
+        json.Add("behaviors", JsonValue.Create(Behaviors.Select(behavior => behavior.Serialize())));
+
+        return json;
     }
 
     public async Task Load()
@@ -165,6 +181,15 @@ public class NodeWorldComponent
         _rotation = rotation ?? Quaternion.Identity;
         _scale = scale ?? Vector3.One;
         _updateMatrix();
+    }
+
+    public JsonObject Serialize()
+    {
+        var json = new JsonObject();
+        json.Add("position", JsonValue.Create(_position));
+        json.Add("rotation", JsonValue.Create(_rotation));
+        json.Add("scale", JsonValue.Create(_scale));
+        return json;
     }
 
     public RuntimeNode? Node

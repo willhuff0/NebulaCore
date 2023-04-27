@@ -7,7 +7,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 export 'nebula/project.dart';
 export 'nebula/asset.dart';
 export 'nebula/node.dart';
-export 'nebula/scene.dart';
 
 class Nebula {
   static late final WebSocketChannel _socket;
@@ -22,8 +21,6 @@ class Nebula {
     peer.registerMethod('Log', (Parameters params) {
       EditorContext.log(params['message'].asString, level: LogLevel.values[params['level'].asIntOr(0)]);
     });
-
-    peer.registerMethod('AssetBundleUpdate', (Parameters params) {});
 
     peer.listen().then((value) async {
       _connected = false;

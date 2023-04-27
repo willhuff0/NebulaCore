@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Nodes\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nebula.Graphics\Nebula.Graphics.csproj" />
+      <ProjectReference Include="..\Nebula.JsonRpc\Nebula.JsonRpc.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="StbImageSharp" Version="2.27.13" />
+      <PackageReference Include="WatsonWebsocket" Version="4.0.8" />
+    </ItemGroup>
+
+</Project>

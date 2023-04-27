@@ -145,7 +145,7 @@ class _EditorState extends State<Editor> {
                   MenuItemButton(
                     leadingIcon: Icon(Icons.save_rounded, size: 20.0),
                     onPressed: EditorContext.activeScene == null ? null : () {
-                      NbScene
+                      // TODO
                     },
                     child: Text('Save Scene'),
                   ),

@@ -1,8 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NebulaCore", "NebulaCore\NebulaCore.csproj", "{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.JsonRpc", "Nebula.JsonRpc\Nebula.JsonRpc.csproj", "{450FD8B6-1B1F-47E9-AD02-F19A3050BDEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NebulaJsonRpc", "NebulaJsonRpc\NebulaJsonRpc.csproj", "{450FD8B6-1B1F-47E9-AD02-F19A3050BDEA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Graphics", "Nebula.Graphics\Nebula.Graphics.csproj", "{63745B67-9B37-401D-875F-4D0462FB7338}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Engine", "Nebula.Engine\Nebula.Engine.csproj", "{A4678592-B27E-45F4-B26B-4F9059E688EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,14 +14,6 @@ Global
 		Release-Unix-arm64|Any CPU = Release-Unix-arm64|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release-Win-x64|Any CPU.ActiveCfg = Release-Win-x64|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release-Win-x64|Any CPU.Build.0 = Release-Win-x64|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug-Win-x64|Any CPU.ActiveCfg = Debug-Win-x64|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug-Win-x64|Any CPU.Build.0 = Debug-Win-x64|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug-Unix-arm64|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Debug-Unix-arm64|Any CPU.Build.0 = Debug-Unix-arm64|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug-Win-x64|Any CPU
-		{6600A4EC-DC0D-44BF-86E8-F5E6BFAAB89A}.Release-Unix-arm64|Any CPU.Build.0 = Debug-Win-x64|Any CPU
 		{450FD8B6-1B1F-47E9-AD02-F19A3050BDEA}.Release-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
 		{450FD8B6-1B1F-47E9-AD02-F19A3050BDEA}.Release-Win-x64|Any CPU.Build.0 = Debug|Any CPU
 		{450FD8B6-1B1F-47E9-AD02-F19A3050BDEA}.Debug-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
@@ -28,5 +22,21 @@ Global
 		{450FD8B6-1B1F-47E9-AD02-F19A3050BDEA}.Debug-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
 		{450FD8B6-1B1F-47E9-AD02-F19A3050BDEA}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
 		{450FD8B6-1B1F-47E9-AD02-F19A3050BDEA}.Release-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{63745B67-9B37-401D-875F-4D0462FB7338}.Release-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{63745B67-9B37-401D-875F-4D0462FB7338}.Release-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{63745B67-9B37-401D-875F-4D0462FB7338}.Debug-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{63745B67-9B37-401D-875F-4D0462FB7338}.Debug-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{63745B67-9B37-401D-875F-4D0462FB7338}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{63745B67-9B37-401D-875F-4D0462FB7338}.Debug-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{63745B67-9B37-401D-875F-4D0462FB7338}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{63745B67-9B37-401D-875F-4D0462FB7338}.Release-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Release-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Release-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Debug-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Debug-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Debug-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Release-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

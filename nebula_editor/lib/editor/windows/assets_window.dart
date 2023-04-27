@@ -32,11 +32,7 @@ class _EditorWindowAssetsState extends State<EditorWindowAssets> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _onProjectLoadedSubscription = EditorContext.onProjectLoaded.listen((project) {
-        setState(() => project = project);
-      });
-    });
+    _onProjectLoadedSubscription = EditorContext.onProjectLoaded.listen((project) => setState(() => project = project));
     super.initState();
   }
 

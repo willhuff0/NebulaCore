@@ -6,6 +6,7 @@ namespace Nebula.Core;
 
 public static unsafe class Engine
 {
+    public static Node? RootNode { get; set; }
     //public static Project? ActiveProject { get; set; }
     //public static RuntimeScene? ActiveScene { get; set; }
     
@@ -85,8 +86,24 @@ public static unsafe class Engine
 
         while (!Glfw.WindowShouldClose(window))
         {
-            // Tick pipeline
+            var inputState = Input.GetState();
+            if (inputState.IsKeyPressed((int)Key.Escape)) Input.UnlockCursor(window);
+            
+            var timeDelta = stopwatch.Elapsed.TotalSeconds;
+            stopwatch.Restart();
+
+            if (RootNode != null)
+            {
+                var frameArgs = new FrameArgs(RootNode, WindowInfo.Size, timeDelta, inputState);
+                Renderer.Frame(frameArgs);
+            }
+
+            Glfw.PollEvents();
+            Glfw.SwapBuffers(window);
         }
+        
+        Glfw.DestroyWindow(window);
+        Glfw.Terminate();
     }
 }
 

@@ -36,7 +36,7 @@ public class BehaviorAsset : Asset
             
             foreach (var (key, value) in json.AsObject())
             {
-                v
+                
                 behaviorType.GetField(key)?.SetValue(behaviorInstance, value);
             }
         }

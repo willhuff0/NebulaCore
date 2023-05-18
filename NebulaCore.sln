@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Graphics", "Nebula.G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Engine", "Nebula.Engine\Nebula.Engine.csproj", "{A4678592-B27E-45F4-B26B-4F9059E688EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Editor", "Nebula.Editor\Nebula.Editor.csproj", "{383F28A3-7E0D-4837-9D5B-535103666953}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Core", "Nebula.Core\Nebula.Core.csproj", "{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Release-Win-x64|Any CPU = Release-Win-x64|Any CPU
@@ -38,5 +42,21 @@ Global
 		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Debug-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
 		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
 		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Release-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{383F28A3-7E0D-4837-9D5B-535103666953}.Release-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{383F28A3-7E0D-4837-9D5B-535103666953}.Release-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{383F28A3-7E0D-4837-9D5B-535103666953}.Debug-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{383F28A3-7E0D-4837-9D5B-535103666953}.Debug-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{383F28A3-7E0D-4837-9D5B-535103666953}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{383F28A3-7E0D-4837-9D5B-535103666953}.Debug-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{383F28A3-7E0D-4837-9D5B-535103666953}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{383F28A3-7E0D-4837-9D5B-535103666953}.Release-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Release-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Release-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Debug-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Debug-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Debug-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Release-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

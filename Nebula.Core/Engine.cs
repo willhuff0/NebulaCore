@@ -28,16 +28,14 @@ public static unsafe class Engine
 
     public static void Run()
     {
-        // if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        // {
-        //     Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_VULKAN);
-        // } 
-        // else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        // {
-        //     Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
-        // }
-        
-        Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_VULKAN);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_VULKAN);
+        } 
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
+        }
         
         if (!Glfw.Init())
         {
@@ -50,7 +48,14 @@ public static unsafe class Engine
         Glfw.WindowHint(Glfw.CLIENT_API, Glfw.OPENGL_ES_API);
         Glfw.WindowHint(Glfw.CONTEXT_CREATION_API, Glfw.EGL_CONTEXT_API);
         Glfw.WindowHint(Glfw.CONTEXT_VERSION_MAJOR, 3);
-        Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 1);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 1);
+        } 
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
+        }
         Glfw.WindowHint(Glfw.SAMPLES, 4);
         var window = Glfw.CreateWindow(1024, 768, "Nebula.Core C#", null, null);
         if (window == null)

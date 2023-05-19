@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using Nebula.Graphics;
 
 namespace Nebula.Core;
@@ -80,7 +81,7 @@ public static unsafe class Engine
         GL.Enable(GL.CULL_FACE);
         GL.CullFace(GL.BACK);
         
-        GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        GL.ClearColor(0.0f, 1.0f, 0.0f, 1.0f);
         GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         
         Input.Setup(window);
@@ -114,26 +115,35 @@ public static unsafe class Engine
 
 public class EngineInformation
 {
-    public string NebulaVersion { get; private set; }
-    public string GlVersion { get; private set; }
-    public string GlRenderer { get; private set; }
+    public readonly string NebulaVersion;
+    public readonly string GlfwVersion;
+    public readonly string GlVersion;
+    public readonly string GlRenderer;
     
-    public EngineInformation(string nebulaVersion, string glVersion, string glRenderer)
+    public EngineInformation(string nebulaVersion, string glfwVersion, string glVersion, string glRenderer)
     {
         NebulaVersion = nebulaVersion;
+        GlfwVersion = glfwVersion;
         GlVersion = glVersion;
         GlRenderer = glRenderer;
     }
 
-    public static EngineInformation FromCurrent() => new EngineInformation(
-        "0.1.0", 
-        GL.GetString(GL.VERSION), 
-        GL.GetString(GL.RENDERER)
-    );
+    public static EngineInformation FromCurrent()
+    {
+        Glfw.GetVersion(out int major, out int minor, out int rev);
+        return new EngineInformation(
+            "0.1.0",
+            $"{major}.{minor}.{rev}",
+            GL.GetString(GL.VERSION),
+            GL.GetString(GL.RENDERER)
+            );
+        
+    }
 
     public void Print()
     {
         Console.WriteLine($"Nebula version: {NebulaVersion}");
+        Console.WriteLine($"GLFW version: {GlfwVersion}");
         Console.WriteLine($"GL version: {GlVersion}");
         Console.WriteLine($"GL renderer: {GlRenderer}");
     }
@@ -141,7 +151,7 @@ public class EngineInformation
 
 public class WindowInformation
 {
-    public (int width, int height) Size { get; private set; }
+    public readonly (int width, int height) Size;
     
     public WindowInformation((int width, int height) size)
     {

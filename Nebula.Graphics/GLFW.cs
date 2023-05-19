@@ -40,7 +40,9 @@ public static unsafe partial class Glfw
     public const int ANGLE_PLATFORM_TYPE_METAL = 0x00037008;
 
     public const int CONTEXT_CREATION_API = 0x0002200B;
+    public const int NATIVE_CONTEXT_API = 0x00036001;
     public const int EGL_CONTEXT_API = 0x00036002;
+    public const int OSMESA_CONTEXT_API = 0x00036003;
 
     public const int CLIENT_API = 0x00022001;
     public const int OPENGL_ES_API = 0x00030002;
@@ -74,10 +76,11 @@ public static unsafe partial class Glfw
     public static partial void InitHint(int hint, int value);
 
     [LibraryImport(dll, EntryPoint = "glfwGetVersion", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GetVersion(int* major, int* minor, int* rev);
+    public static partial void GetVersion(out int major, out int minor, out int rev);
 
+    // TODO: Fix ASCII return string problem
     [LibraryImport(dll, EntryPoint = "glfwGetVersionString", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial string GetVersionString();
+    public static partial byte* GetVersionString();
 
     [LibraryImport(dll, EntryPoint = "glfwSetErrorCallback", StringMarshalling = StringMarshalling.Utf8)]
     public static partial GLFWerrorfun SetErrorCallback(GLFWerrorfun callback);

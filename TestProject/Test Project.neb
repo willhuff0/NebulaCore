@@ -1,1 +1,15 @@
-{"name":"Test Project","bundleId":"com.willhuffman.testProject","bundle":{"groups":{"behaviors":{},"materials":{},"meshes":{},"nodes":{},"scenes":{},"libraryShaders":{},"renderShaders":{},"textures":{}}}}
+{
+    "name": "Test Project",
+    "database": {
+        "material": {},
+        "mesh": {},
+        "texture": {},
+        "shader": {}
+    },
+    "collections": {
+      "guid": [
+        "assetGuid",
+        "assetGuid2"
+      ]  
+    }
+}

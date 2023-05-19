@@ -1,26 +1,31 @@
-﻿namespace Nebula.Core;
+﻿using Nebula.Graphics;
+
+namespace Nebula.Core;
 
 public static class Renderer
 {
-    public static void Frame(FrameArgs args)
+    public static void Frame(FrameArgs frameArgs)
     {
-        args.Root.OnBeginFrame();
+        GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         
-        args.Root.OnRender();
+        frameArgs.Root._onBeginFrame(frameArgs);
+
+        var renderArgs = new RenderArgs(frameArgs, false);
+        frameArgs.Root._onRender(renderArgs);
         
-        args.Root.OnEndFrame();
+        frameArgs.Root._onEndFrame(frameArgs);
     }
 }
 
 public class FrameArgs
 {
-    public Node Root { get; private set; }
-    
-    public (int width, int height) FrameSize { get; private set; }
+    public readonly Node Root;
 
-    public double TimeDelta { get; private set; }
+    public readonly (int width, int height) FrameSize;
 
-    public InputState Input { get; private set; }
+    public readonly double TimeDelta;
+
+    public readonly InputState Input;
 
     public FrameArgs(Node root, (int width, int height) frameSize, double timeDelta, InputState input)
     {
@@ -28,5 +33,18 @@ public class FrameArgs
         FrameSize = frameSize;
         TimeDelta = timeDelta;
         Input = input;
+    }
+}
+
+public class RenderArgs
+{
+    public readonly FrameArgs FrameArgs;
+    
+    public readonly bool IsForShadows;
+
+    public RenderArgs(FrameArgs frameArgs, bool isForShadows)
+    {
+        FrameArgs = frameArgs;
+        IsForShadows = isForShadows;
     }
 }

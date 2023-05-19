@@ -31,18 +31,31 @@ public abstract class Node
         _children.RemoveAt(index);
     }
 
-    public virtual void OnBeginFrame()
+    internal void _onBeginFrame(FrameArgs args)
     {
-        _children.ForEach(node => node.OnBeginFrame());
+        _children.ForEach(node => node._onBeginFrame(args));
+        OnBeginFrame(args);
     }
 
-    public virtual void OnRender()
+    internal void _onRender(RenderArgs args)
     {
-        _children.ForEach(node => node.OnRender());
+        _children.ForEach(node => node._onRender(args));
+        OnRender(args);
     }
 
-    public virtual void OnEndFrame()
+    internal void _onEndFrame(FrameArgs args)
     {
-        _children.ForEach(node => node.OnEndFrame());
+        _children.ForEach(node => node._onEndFrame(args));
+        OnEndFrame(args);
     }
+
+    internal List<Guid> _gatherDependencies() => _children.Aggregate(new List<Guid>(), (list, node) => list.Concat(node._gatherDependencies()).ToList()).Concat(GatherDependencies()).ToList();
+
+    protected abstract List<Guid> GatherDependencies();
+
+    protected virtual void OnBeginFrame(FrameArgs args) { }
+
+    protected virtual void OnRender(RenderArgs args) { }
+
+    protected virtual void OnEndFrame(FrameArgs args) { }
 }

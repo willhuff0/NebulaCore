@@ -1,3 +1,3 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using Nebula.Core;
 
-Console.WriteLine("Hello, World!");
+Engine.Run();

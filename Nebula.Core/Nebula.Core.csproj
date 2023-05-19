@@ -6,10 +6,37 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Configurations>Release-Win-x64;Debug-Unix-arm64;Debug-Win-x64;Release-Unix-arm64</Configurations>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug-Unix-arm64' ">
+      <DefineConstants>TRACE;UNIX</DefineConstants>
+      <PlatformTarget>ARM64</PlatformTarget>
+      <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug-Win-x64' ">
+      <DefineConstants>TRACE;WINDOWS</DefineConstants>
+      <PlatformTarget>x64</PlatformTarget>
+      <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release-Unix-arm64' ">
+      <DefineConstants>TRACE;UNIX</DefineConstants>
+      <Optimize>true</Optimize>
+      <PlatformTarget>ARM64</PlatformTarget>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release-Win-x64' ">
+      <DefineConstants>TRACE;WINDOWS</DefineConstants>
+      <Optimize>true</Optimize>
+      <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Nebula.Graphics\Nebula.Graphics.csproj" />
+      <ProjectReference Include="..\Nebula.Math\Nebula.Math.csproj" />
     </ItemGroup>
 
 </Project>

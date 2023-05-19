@@ -1,0 +1,31 @@
+name: nebula_editor
+description: A new Flutter project.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0-290.3.beta <4.0.0'
+
+dependencies:
+  collection: ^1.17.1
+  file_picker: ^5.2.7
+  flutter:
+    sdk: flutter
+  fuzzywuzzy: ^0.2.0
+  http: ^0.13.5
+  json_rpc_2: ^3.0.2
+  meta: ^1.9.0
+  path: ^1.8.3
+  path_provider: ^2.0.14
+  resizable_widget: ^1.0.5
+  uuid: ^3.0.7
+  web_socket_channel: ^2.3.0
+  window_manager: ^0.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+
+flutter:
+  uses-material-design: true

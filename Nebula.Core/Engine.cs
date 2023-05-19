@@ -6,10 +6,8 @@ namespace Nebula.Core;
 
 public static unsafe class Engine
 {
-    public static Node? RootNode { get; set; }
-    //public static Project? ActiveProject { get; set; }
-    //public static RuntimeScene? ActiveScene { get; set; }
-    
+    public static Node? RootNode { get; private set; }
+
     public static EngineInformation EngineInfo { get; private set; } = null!;
     public static WindowInformation WindowInfo { get; private set; } = null!;
     
@@ -28,29 +26,31 @@ public static unsafe class Engine
     
     #endregion
 
-    public static void Initialize()
+    public static void Run()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-            Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_VULKAN);
-        } 
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
-        }
+        // if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        // {
+        //     Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_VULKAN);
+        // } 
+        // else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        // {
+        //     Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
+        // }
+        
+        Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_VULKAN);
         
         if (!Glfw.Init())
         {
             Console.WriteLine("Failed to initialize GLFW");
             return;
         }
-        
+
         Glfw.SetErrorCallback(GlfwErrorCallback);
         
         Glfw.WindowHint(Glfw.CLIENT_API, Glfw.OPENGL_ES_API);
         Glfw.WindowHint(Glfw.CONTEXT_CREATION_API, Glfw.EGL_CONTEXT_API);
         Glfw.WindowHint(Glfw.CONTEXT_VERSION_MAJOR, 3);
-        Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
+        Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 1);
         Glfw.WindowHint(Glfw.SAMPLES, 4);
         var window = Glfw.CreateWindow(1024, 768, "Nebula.Core C#", null, null);
         if (window == null)

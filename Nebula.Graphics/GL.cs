@@ -14,9 +14,9 @@ using GLsizeiptr = Int64;
 public static partial class GL
 {
 #if WINDOWS
-    private const string dll = "LibGLESv2.dll";
+    private const string dll = "libGLESv2.dll";
 #else
-    private const string dll = "LibGLESv2.dylib";
+    private const string dll = "libGLESv2.dylib";
 #endif
 
     public const GLenum FALSE = 0;
@@ -156,6 +156,8 @@ public static partial class GL
     public const GLenum TRIANGLE_STRIP = 0x0005;
     public const GLenum TRIANGLE_FAN = 0x0006;
 
+    public const GLenum PROGRAM_BINARY_LENGTH = 0x8741;
+
     [LibraryImport(dll, EntryPoint = "glGetString", StringMarshalling = StringMarshalling.Utf8)]
     public static partial string GetString(GLenum name);
 
@@ -193,8 +195,7 @@ public static partial class GL
     public static partial void GetShader(GLuint shader, GLenum pname, out GLint param);
 
     [LibraryImport(dll, EntryPoint = "glGetShaderInfoLog", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GetShaderInfoLog(GLuint shader, GLsizei maxLength, out GLsizei length,
-        out string infoLog);
+    public static partial void GetShaderInfoLog(GLuint shader, GLsizei maxLength, out GLsizei length, out string infoLog);
 
     [LibraryImport(dll, EntryPoint = "glCreateProgram", StringMarshalling = StringMarshalling.Utf8)]
     public static partial GLuint CreateProgram();
@@ -215,15 +216,19 @@ public static partial class GL
     public static partial void GetProgram(GLuint program, GLenum pname, out GLint param);
 
     [LibraryImport(dll, EntryPoint = "glGetProgramInfoLog", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GetProgramInfoLog(GLuint shader, GLsizei maxLength, out GLsizei length,
-        out string infoLog);
+    public static partial void GetProgramInfoLog(GLuint shader, GLsizei maxLength, out GLsizei length, out string infoLog);
 
     [LibraryImport(dll, EntryPoint = "glDeleteProgram", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DeleteProgram(GLuint program);
 
+    [LibraryImport(dll, EntryPoint = "glGetProgramBinary", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void GetProgramBinary(GLuint program, GLsizei bufsize, out GLsizei length, out GLenum binaryFormat, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] out byte[] binary);
+
+    [LibraryImport(dll, EntryPoint = "glProgramBinary", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void ProgramBinary(GLuint program, GLenum binaryFormat, [MarshalAs(UnmanagedType.LPArray)] in byte[] binary, GLsizei length);
+    
     [LibraryImport(dll, EntryPoint = "glGetActiveUniform", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, out GLsizei length,
-        out GLint size, out GLenum type, out string name);
+    public static partial void GetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, out GLsizei length, out GLint size, out GLenum type, out string name);
 
     [LibraryImport(dll, EntryPoint = "glGetUniformLocation", StringMarshalling = StringMarshalling.Utf8)]
     public static partial GLint GetUniformLocation(GLuint program, string name);
@@ -281,6 +286,9 @@ public static partial class GL
 
     [LibraryImport(dll, EntryPoint = "glTexImage2D", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void TexImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, [MarshalAs(UnmanagedType.LPArray)] in byte[] data);
+
+    [LibraryImport(dll, EntryPoint = "glCompressedTexImage2D", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void CompressedTexImage2D(GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, [MarshalAs(UnmanagedType.LPArray)] in byte[] data);
     
     [LibraryImport(dll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void TexParameter(GLenum target, GLenum pname, GLfloat param);

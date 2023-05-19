@@ -2,5 +2,6 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cwehuf_005Chome_005Cdev_005CNebulaCore_005Cdeps_005CAssimp_002ENet_005CAssimpNet_002Esln/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cwehuf_005Chome_005Cdev_005CNebulaCore_005Cdeps_005CAssimp_002ENet_005CAssimpNet_005Cobj_005CDebug_005Cnet7_002E0_005CStirlingLabs_002EAssimp_002ENet_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=383f28a3_002D7e0d_002D4837_002D9d5b_002D535103666953_0023Nebula_002EEditor/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=a4678592_002Db27e_002D45f4_002Db26b_002D4f9059e688ec_0023Nebula_002EEngine/@EntryIndexedValue">True</s:Boolean>
 	
 	</wpf:ResourceDictionary>

@@ -48,7 +48,7 @@ public class Mesh : Asset, IAssetLoader
     {
         var data = File.ReadAllBytes(_path);
 
-        const int bytesPerIndex = 2; // UInt16
+        const int bytesPerIndex = 4; // UInt32
         
         var indexData = _indexCount == null ? null : data.Take((int)_indexCount * bytesPerIndex).ToArray();
         var vertexData = _indexCount == null ? data : data.Skip((int)_indexCount * bytesPerIndex).ToArray();
@@ -97,7 +97,7 @@ public class Mesh : Asset, IAssetLoader
     {
         GL.BindVertexArray(_vao);
 
-        if (_ebo != null) GL.DrawElements(GL.TRIANGLES, _count, GL.UNSIGNED_SHORT, 0);
+        if (_ebo != null) GL.DrawElements(GL.TRIANGLES, _count, GL.UNSIGNED_INT, 0);
         else GL.DrawArrays(GL.TRIANGLES, 0, _count);
 
         GL.BindVertexArray(0);

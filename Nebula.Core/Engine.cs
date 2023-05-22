@@ -72,7 +72,7 @@ public static unsafe class Engine
         Glfw.SetFramebufferSizeCallback(_window, GlfwFramebufferSizeCallback);
 
         EngineInfo = EngineInformation.FromCurrent();
-        //EngineInfo.Print();
+        EngineInfo.Print();
 
         WindowInfo = new WindowInformation((1024, 768));
         GL.Viewport(0, 0, 1024, 768);
@@ -82,7 +82,7 @@ public static unsafe class Engine
         GL.Enable(GL.CULL_FACE);
         GL.CullFace(GL.BACK);
         
-        GL.ClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+        GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         
         Input.Setup(_window);

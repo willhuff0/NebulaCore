@@ -160,12 +160,17 @@ public class Shader : Asset, IAssetLoader
     public void SetUniform(int location, Vector2<float> value) => GL.ProgramUniform(_program, location, value.X, value.Y);
     public void SetUniform(int location, Vector3<float> value) => GL.ProgramUniform(_program, location, value.X, value.Y, value.Z);
     public void SetUniform(int location, Vector4<float> value) => GL.ProgramUniform(_program, location, value.X, value.Y, value.Z, value.W);
+    public void SetUniform(int location, double value) => GL.ProgramUniform(_program, location, (float)value);
+    public void SetUniform(int location, Vector2<double> value) => GL.ProgramUniform(_program, location, (float)value.X, (float)value.Y);
+    public void SetUniform(int location, Vector3<double> value) => GL.ProgramUniform(_program, location, (float)value.X, (float)value.Y, (float)value.Z);
+    public void SetUniform(int location, Vector4<double> value) => GL.ProgramUniform(_program, location, (float)value.X, (float)value.Y, (float)value.Z, (float)value.W);
     public void SetUniform(int location, int value) => GL.ProgramUniform(_program, location, value);
     public void SetUniform(int location, Vector2<int> value) => GL.ProgramUniform(_program, location, value.X, value.Y);
     public void SetUniform(int location, Vector3<int> value) => GL.ProgramUniform(_program, location, value.X, value.Y, value.Z);
     public void SetUniform(int location, Vector4<int> value) => GL.ProgramUniform(_program, location, value.X, value.Y, value.Z, value.W);
     public void SetUniform(int location, bool value) => GL.ProgramUniform(_program, location, value ? 1 : 0);
-    public void SetUniform(int location, Matrix4<float> value) => GL.ProgramUniformMatrix4(_program, location, 1, false, value.ToArray());
+    public void SetUniform(int location, Matrix4<float> value) => GL.ProgramUniformMatrix4(_program, location, 1, false, value.ToColumnMajorArray());
+    public void SetUniform(int location, Matrix4<double> value) => GL.ProgramUniformMatrix4(_program, location, 1, false, value.ToColumnMajorFloatArray());
 
     public void SetUniform(int location, object value)
     {
@@ -180,6 +185,9 @@ public class Shader : Asset, IAssetLoader
             case float val:
                 SetUniform(location, val);
                 break;
+            case double val:
+                SetUniform(location, (float)val);
+                break;
             case Vector2<float> val:
                 SetUniform(location, val);
                 break;
@@ -187,6 +195,21 @@ public class Shader : Asset, IAssetLoader
                 SetUniform(location, val);
                 break;
             case Vector4<float> val:
+                SetUniform(location, val);
+                break;
+            case Vector2<double> val:
+                SetUniform(location, val);
+                break;
+            case Vector3<double> val:
+                SetUniform(location, val);
+                break;
+            case Vector4<double> val:
+                SetUniform(location, val);
+                break;
+            case Matrix4<float> val:
+                SetUniform(location, val);
+                break;
+            case Matrix4<double> val:
                 SetUniform(location, val);
                 break;
             case int[] val:
@@ -223,6 +246,26 @@ public class Shader : Asset, IAssetLoader
                         break;
                     case 16:
                         SetUniform(location, new Matrix4<float>(val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7], val[8], val[9], val[10], val[11], val[12], val[13], val[14], val[15]));
+                        break;
+                }
+                break;
+            case double[] val:
+                switch (val.Length)
+                {
+                    case 1:
+                        SetUniform(location, val[0]);
+                        break;
+                    case 2:
+                        SetUniform(location, new Vector2<double>(val[0], val[1]));
+                        break;
+                    case 3:
+                        SetUniform(location, new Vector3<double>(val[0], val[1], val[2]));
+                        break;
+                    case 4:
+                        SetUniform(location, new Vector4<double>(val[0], val[1], val[2], val[3]));
+                        break;
+                    case 16:
+                        SetUniform(location, new Matrix4<double>(val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7], val[8], val[9], val[10], val[11], val[12], val[13], val[14], val[15]));
                         break;
                 }
                 break;

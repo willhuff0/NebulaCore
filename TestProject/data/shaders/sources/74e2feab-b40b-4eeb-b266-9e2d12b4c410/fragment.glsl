@@ -10,5 +10,5 @@ in vec3 v_normal;
 //layout(location = 0) uniform sampler2D nebula_texture_albedo;
 
 void main() {
-    FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+    FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

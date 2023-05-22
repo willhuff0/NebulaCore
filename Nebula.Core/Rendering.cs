@@ -6,8 +6,6 @@ public static class Renderer
 {
     public static void Frame(FrameArgs frameArgs)
     {
-        GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
-        
         frameArgs.Root._onBeginFrame(frameArgs);
 
         var renderArgs = new RenderArgs(frameArgs, false);
@@ -21,16 +19,17 @@ public class FrameArgs
 {
     public readonly Node Root;
 
-    public readonly (int width, int height) FrameSize;
-
+    public readonly (int width, int height) Size;
+    public double Aspect => (double)Size.width / (double)Size.height;
+    
     public readonly double TimeDelta;
 
     public readonly InputState Input;
 
-    public FrameArgs(Node root, (int width, int height) frameSize, double timeDelta, InputState input)
+    public FrameArgs(Node root, (int width, int height) size, double timeDelta, InputState input)
     {
         Root = root;
-        FrameSize = frameSize;
+        Size = size;
         TimeDelta = timeDelta;
         Input = input;
     }

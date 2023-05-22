@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Nebula.Graphics;
 
@@ -14,9 +15,11 @@ using GLsizeiptr = Int64;
 public static partial class GL
 {
 #if WINDOWS
-    private const string dll = "libGLESv2.dll";
+    private const string glesDll = "libGLESv2.dll";
+    private const string eglDll = "libEGL.dll";
 #else
-    private const string dll = "libGLESv2.dylib";
+    private const string glesDll = "libGLESv2.dylib";
+    private const string eglDll = "libEGL.dylib";
 #endif
 
     public const GLenum FALSE = 0;
@@ -157,193 +160,310 @@ public static partial class GL
     public const GLenum TRIANGLE_FAN = 0x0006;
 
     public const GLenum PROGRAM_BINARY_LENGTH = 0x8741;
+    public const GLenum NUM_PROGRAM_BINARY_FORMATS = 0x87FE;
+    public const GLenum PROGRAM_BINARY_FORMATS = 0x87FF;
 
-    [LibraryImport(dll, EntryPoint = "glGetString", StringMarshalling = StringMarshalling.Utf8)]
+    public const GLenum NO_ERROR = 0;
+    public const GLenum INVALID_ENUM = 0x0500;
+    public const GLenum INVALID_VALUE = 0x0501;
+    public const GLenum INVALID_OPERATION = 0x0502;
+    public const GLenum INVALID_FRAMEBUFFER_OPERATION = 0x0506;
+    public const GLenum OUT_OF_MEMORY = 0x0505;
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetBooleanv", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum pname, [MarshalAs(UnmanagedType.U1)] out bool data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetBooleanv", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum pname, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1)] bool[] data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetFloatv", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum pname, out GLfloat data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetFloatv", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum pname, GLfloat[] data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetIntegerv", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum pname, out GLint data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetIntegerv", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum pname, GLint[] data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetInteger64v", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum pname, out Int64 data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetInteger64v", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum pname, Int64[] data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetBooleani_v", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum target, GLuint index, [MarshalAs(UnmanagedType.U1)] out bool data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetIntegeri_v", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum target, GLuint index, out GLint data);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetInteger64i_v", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void Get(GLenum target, GLuint index, out Int64 data);
+
+    [LibraryImport(glesDll, EntryPoint = "glGetString", StringMarshalling = StringMarshalling.Utf8)]
     public static partial string GetString(GLenum name);
+    
+    [LibraryImport(glesDll, EntryPoint = "glGetError", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial GLenum GetError();
 
-    [LibraryImport(dll, EntryPoint = "glClearColor", StringMarshalling = StringMarshalling.Utf8)]
+    public static string GetErrorDescription(GLenum error)
+    {
+        switch (error)
+        {
+            case NO_ERROR:
+                return "GL_NO_ERROR: No error has been recorded.";
+            case INVALID_ENUM:
+                return "GL_INVALID_ENUM: An unacceptable value is specified for an enumerated argument.";
+            case INVALID_VALUE:
+                return "GL_INVALID_VALUE: A numeric argument is out of range.";
+            case INVALID_OPERATION:
+                return "GL_INVALID_OPERATION: The specified operation is not allowed in the current state.";
+            case INVALID_FRAMEBUFFER_OPERATION:
+                return "GL_INVALID_FRAMEBUFFER_OPERATION: The framebuffer object is not complete.";
+            case OUT_OF_MEMORY:
+                return "GL_OUT_OF_MEMORY: There is not enough memory left to execute the command. The state of the GL is undefined, except for the state of the error flags, after this error is recorded.";
+            default:
+                return $"{error} is not a valid GLES error code.";
+        }
+    }
+
+    public static void CheckError()
+    {
+        var error = GetError();
+        if (error != NO_ERROR) throw new Exception($"OpenGL ES error {error}, {GetErrorDescription(error)}");
+    }
+
+    [LibraryImport(glesDll, EntryPoint = "glClearColor", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ClearColor(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
 
-    [LibraryImport(dll, EntryPoint = "glClear", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glClear", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void Clear(GLenum mask);
 
-    [LibraryImport(dll, EntryPoint = "glEnable", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glEnable", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void Enable(GLenum cap);
 
-    [LibraryImport(dll, EntryPoint = "glDisable", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDisable", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void Disable(GLenum cap);
 
-    [LibraryImport(dll, EntryPoint = "glCullFace", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glCullFace", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void CullFace(GLenum mode);
 
-    [LibraryImport(dll, EntryPoint = "glViewport", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glViewport", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void Viewport(int x, int y, GLsizei width, GLsizei height);
 
-    [LibraryImport(dll, EntryPoint = "glCreateShader", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glCreateShader", StringMarshalling = StringMarshalling.Utf8)]
     public static partial GLuint CreateShader(GLenum shaderType);
 
-    [LibraryImport(dll, EntryPoint = "glShaderSource", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glShaderSource", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ShaderSource(GLuint shader, GLsizei count, string[] source, GLint[]? length);
+
+    [LibraryImport(glesDll, EntryPoint = "glGetShaderSource", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void GetShaderSource(GLuint shader, GLsizei bufSize, out GLsizei length, out string source);
 
     // [LibraryImport(dll, EntryPoint = "glShaderSource")]
     // public static partial void ShaderSource(GLuint shader, GLsizei count, string source, GLint[]? length = null);
 
-    [LibraryImport(dll, EntryPoint = "glCompileShader", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glCompileShader", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void CompileShader(GLuint shader);
 
-    [LibraryImport(dll, EntryPoint = "glGetShaderiv", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glGetShaderiv", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void GetShader(GLuint shader, GLenum pname, out GLint param);
 
-    [LibraryImport(dll, EntryPoint = "glGetShaderInfoLog", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GetShaderInfoLog(GLuint shader, GLsizei maxLength, out GLsizei length, out string infoLog);
+    [LibraryImport(glesDll, EntryPoint = "glGetShaderInfoLog", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void GetShaderInfoLog(GLuint shader, GLsizei maxLength, out GLsizei length, byte[] infoLog);
 
-    [LibraryImport(dll, EntryPoint = "glCreateProgram", StringMarshalling = StringMarshalling.Utf8)]
+    public static string GetShaderInfoLog(GLuint shader)
+    {
+        GetShader(shader, INFO_LOG_LENGTH, out var maxLength);
+        var infoLog = new byte[maxLength];
+        GetShaderInfoLog(shader, maxLength, out var length, infoLog);
+        return Encoding.UTF8.GetString(infoLog, 0, length);
+    }
+
+    [LibraryImport(glesDll, EntryPoint = "glCreateProgram", StringMarshalling = StringMarshalling.Utf8)]
     public static partial GLuint CreateProgram();
 
-    [LibraryImport(dll, EntryPoint = "glAttachShader", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glAttachShader", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void AttachShader(GLuint program, GLuint shader);
 
-    [LibraryImport(dll, EntryPoint = "glLinkProgram", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glLinkProgram", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void LinkProgram(GLuint program);
 
-    [LibraryImport(dll, EntryPoint = "glDetachShader", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDetachShader", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DetachShader(GLuint program, GLuint shader);
 
-    [LibraryImport(dll, EntryPoint = "glDeleteShader", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDeleteShader", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DeleteShader(GLuint shader);
 
-    [LibraryImport(dll, EntryPoint = "glGetProgramiv", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glGetProgramiv", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void GetProgram(GLuint program, GLenum pname, out GLint param);
 
-    [LibraryImport(dll, EntryPoint = "glGetProgramInfoLog", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GetProgramInfoLog(GLuint shader, GLsizei maxLength, out GLsizei length, out string infoLog);
+    [LibraryImport(glesDll, EntryPoint = "glGetProgramInfoLog", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void GetProgramInfoLog(GLuint program, GLsizei maxLength, out GLsizei length, byte[] infoLog);
+    
+    public static string GetProgramInfoLog(GLuint program)
+    {
+        GetProgram(program, INFO_LOG_LENGTH, out var maxLength);
+        var infoLog = new byte[maxLength];
+        GetProgramInfoLog(program, maxLength, out var length, infoLog);
+        return Encoding.UTF8.GetString(infoLog, 0, length);
+    }
 
-    [LibraryImport(dll, EntryPoint = "glDeleteProgram", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDeleteProgram", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DeleteProgram(GLuint program);
 
-    [LibraryImport(dll, EntryPoint = "glGetProgramBinary", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GetProgramBinary(GLuint program, GLsizei bufsize, out GLsizei length, out GLenum binaryFormat, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] out byte[] binary);
+    [LibraryImport(glesDll, EntryPoint = "glGetProgramBinary", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void GetProgramBinary(GLuint program, GLsizei bufsize, out GLsizei length, out GLenum binaryFormat, byte[] binary);
 
-    [LibraryImport(dll, EntryPoint = "glProgramBinary", StringMarshalling = StringMarshalling.Utf8)]
+    public static byte[] GetProgramBinary(GLuint program, out GLenum binaryFormat)
+    {
+        GetProgram(program, PROGRAM_BINARY_LENGTH, out var maxLength);
+        var binary = new byte[maxLength];
+        GetProgramBinary(program, maxLength, out var length, out binaryFormat, binary);
+        return binary.Take(length).ToArray();
+    }
+
+    [LibraryImport(glesDll, EntryPoint = "glProgramBinary", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramBinary(GLuint program, GLenum binaryFormat, [MarshalAs(UnmanagedType.LPArray)] in byte[] binary, GLsizei length);
     
-    [LibraryImport(dll, EntryPoint = "glGetActiveUniform", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glGetActiveUniform", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void GetActiveUniform(GLuint program, GLuint index, GLsizei bufSize, out GLsizei length, out GLint size, out GLenum type, out string name);
 
-    [LibraryImport(dll, EntryPoint = "glGetUniformLocation", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glGetUniformLocation", StringMarshalling = StringMarshalling.Utf8)]
     public static partial GLint GetUniformLocation(GLuint program, string name);
 
-    [LibraryImport(dll, EntryPoint = "glUseProgram", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glUseProgram", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void UseProgram(GLuint program);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform1f", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform1f", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLfloat v0);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform2f", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform2f", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLfloat v0, GLfloat v1);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform3f", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform3f", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform4f", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform4f", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform1i", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform1i", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLint v0);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform2i", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform2i", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLint v0, GLint v1);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform3i", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform3i", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLint v0, GLint v1, GLint v2);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform4i", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform4i", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform1ui", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform1ui", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLuint v0);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform2ui", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform2ui", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLuint v0, GLuint v1);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform3ui", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform3ui", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniform4ui", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniform4ui", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniform(GLuint program, GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
 
-    [LibraryImport(dll, EntryPoint = "glProgramUniformMatrix4fv", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glProgramUniformMatrix4fv", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ProgramUniformMatrix4(GLuint program, GLint location, GLsizei count, [MarshalAs(UnmanagedType.U1)] bool transpose, float[] value);
 
-    [LibraryImport(dll, EntryPoint = "glGenTextures", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glGenTextures", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void GenTextures(GLsizei n, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U4, SizeParamIndex = 0)] out GLuint[] textures);
 
-    [LibraryImport(dll, EntryPoint = "glActiveTexture", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glActiveTexture", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void ActiveTexture(GLenum texture);
 
-    [LibraryImport(dll, EntryPoint = "glBindTexture", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glBindTexture", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void BindTexture(GLenum target, GLuint texture);
 
-    [LibraryImport(dll, EntryPoint = "glTexImage2D", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glTexImage2D", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void TexImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, [MarshalAs(UnmanagedType.LPArray)] in byte[] data);
 
-    [LibraryImport(dll, EntryPoint = "glCompressedTexImage2D", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glCompressedTexImage2D", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void CompressedTexImage2D(GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, [MarshalAs(UnmanagedType.LPArray)] in byte[] data);
     
-    [LibraryImport(dll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void TexParameter(GLenum target, GLenum pname, GLfloat param);
 
-    [LibraryImport(dll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void TexParameter(GLenum target, GLenum pname, GLint param);
 
-    [LibraryImport(dll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void TexParameter(GLenum target, GLenum pname, GLfloat[] _params);
 
-    [LibraryImport(dll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glTexParameter", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void TexParameter(GLenum target, GLenum pname, GLint[] _params);
 
-    [LibraryImport(dll, EntryPoint = "glGenerateMipmap", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glGenerateMipmap", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void GenerateMipmap(GLenum target);
     
-    [LibraryImport(dll, EntryPoint = "glDeleteTextures", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDeleteTextures", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DeleteTextures(GLsizei n, GLuint[] textures);
 
-    [LibraryImport(dll, EntryPoint = "glGenVertexArrays", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GenVertexArrays(GLsizei n, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U4, SizeParamIndex = 0)] out GLuint[] arrays);
+    [LibraryImport(glesDll, EntryPoint = "glGenVertexArrays", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void GenVertexArrays(GLsizei n, GLuint[] arrays);
 
-    [LibraryImport(dll, EntryPoint = "glBindVertexArray", StringMarshalling = StringMarshalling.Utf8)]
+    public static GLuint[] GenVertexArrays(GLsizei n)
+    {
+        var vertexArrays = new uint[n];
+        GenVertexArrays(n, vertexArrays);
+        return vertexArrays;
+    }
+    
+    public static GLuint GenVertexArray() => GenVertexArrays(1)[0];
+
+    [LibraryImport(glesDll, EntryPoint = "glBindVertexArray", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void BindVertexArray(GLuint array);
 
-    [LibraryImport(dll, EntryPoint = "glDeleteVertexArrays", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDeleteVertexArrays", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DeleteVertexArrays(GLsizei n, GLuint[] arrays);
 
-    [LibraryImport(dll, EntryPoint = "glGenBuffers", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void GenBuffers(GLsizei n, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U4, SizeParamIndex = 0)] out GLuint[] buffers);
+    [LibraryImport(glesDll, EntryPoint = "glGenBuffers", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void GenBuffers(GLsizei n, GLuint[] buffers);
     
-    [LibraryImport(dll, EntryPoint = "glDeleteBuffers", StringMarshalling = StringMarshalling.Utf8)]
+    public static GLuint[] GenBuffers(GLsizei n)
+    {
+        var buffers = new uint[n];
+        GenVertexArrays(n, buffers);
+        return buffers;
+    }
+    
+    public static GLuint GenBuffer() => GenBuffers(1)[0];
+    
+    [LibraryImport(glesDll, EntryPoint = "glDeleteBuffers", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DeleteBuffers(GLsizei n, GLuint[] buffers);
 
-    [LibraryImport(dll, EntryPoint = "glBindBuffer", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glBindBuffer", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void BindBuffer(GLenum target, GLuint buffer);
 
-    [LibraryImport(dll, EntryPoint = "glBufferData", StringMarshalling = StringMarshalling.Utf8)]
-    public static partial void BufferData(GLenum target, GLsizeiptr size, [MarshalAs(UnmanagedType.LPArray)] in byte[] data, GLenum usage);
+    [LibraryImport(glesDll, EntryPoint = "glBufferData", StringMarshalling = StringMarshalling.Utf8)]
+    public static partial void BufferData(GLenum target, GLsizeiptr size, byte[] data, GLenum usage);
 
-    [LibraryImport(dll, EntryPoint = "glEnableVertexAttribArray", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glEnableVertexAttribArray", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void EnableVertexAttribArray(GLuint index);
     
-    [LibraryImport(dll, EntryPoint = "glDisableVertexAttribArray", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDisableVertexAttribArray", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DisableVertexAttribArray(GLuint index);
     
-    [LibraryImport(dll, EntryPoint = "glVertexAttribPointer", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glVertexAttribPointer", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void VertexAttribPointer(GLuint index, GLint size, GLenum type, [MarshalAs(UnmanagedType.U1)] bool normalized, GLsizei stride, IntPtr pointer);
 
-    [LibraryImport(dll, EntryPoint = "glVertexAttribPointer", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glVertexAttribPointer", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLsizei stride, IntPtr pointer);
 
-    [LibraryImport(dll, EntryPoint = "glDrawElements", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDrawElements", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DrawElements(GLenum mode, GLsizei count, GLenum type, IntPtr indices);
 
-    [LibraryImport(dll, EntryPoint = "glDrawArrays", StringMarshalling = StringMarshalling.Utf8)]
+    [LibraryImport(glesDll, EntryPoint = "glDrawArrays", StringMarshalling = StringMarshalling.Utf8)]
     public static partial void DrawArrays(GLenum mode, GLint first, GLsizei count);
 }

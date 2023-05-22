@@ -1,15 +1,27 @@
 {
     "name": "Test Project",
-    "database": {
-        "material": {},
-        "mesh": {},
-        "texture": {},
-        "shader": {}
+    "definitions": {
+        "mesh": {
+          "4fae96ea-cedd-446c-9fbb-3e397705ee52": {
+            "indexCount": 2904
+          }
+        },
+        "shader": {
+          "74e2feab-b40b-4eeb-b266-9e2d12b4c410": {
+
+          }
+        },
+        "material": {
+          "8398ebfd-66ed-4103-8ee3-f33faf8735a1": {
+            "shader": "74e2feab-b40b-4eeb-b266-9e2d12b4c410"
+          }
+        }
     },
     "collections": {
-      "guid": [
-        "assetGuid",
-        "assetGuid2"
+      "bc238247-94dd-4eef-979d-558ef4e555bd": [
+        "4fae96ea-cedd-446c-9fbb-3e397705ee52",
+        "74e2feab-b40b-4eeb-b266-9e2d12b4c410",
+        "8398ebfd-66ed-4103-8ee3-f33faf8735a1"
       ]  
     }
 }

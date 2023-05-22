@@ -1,13 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <Configurations>Debug-Unix-arm64;Debug-Win-x64;Release-Win-x64;Release-Unix-arm64</Configurations>
+        <Configurations>Release-Win-x64;Debug-Win-x64;Debug-Unix-arm64;Release-Unix-arm64</Configurations>
         <Platforms>AnyCPU</Platforms>
-        <LangVersion>11</LangVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug-Unix-arm64' ">
@@ -33,5 +32,20 @@
       <Optimize>true</Optimize>
       <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nebula.BuiltIn\Nebula.BuiltIn.csproj" />
+      <ProjectReference Include="..\Nebula.Core\Nebula.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="StirlingLabs.Assimp.Net">
+        <HintPath>..\deps\Assimp.Net\AssimpNet\bin\Debug\net7.0\StirlingLabs.Assimp.Net.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="StirlingLabs.assimp.native.win-x64" Version="5.2.5.4" />
+    </ItemGroup>
 
 </Project>

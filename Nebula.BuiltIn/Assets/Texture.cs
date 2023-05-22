@@ -1,11 +1,12 @@
-﻿using Nebula.Graphics;
+﻿using Nebula.Core;
+using Nebula.Graphics;
 
-namespace Nebula.Core.Assets;
+namespace Nebula.BuiltIn.Assets;
 
 [AssetLoader("texture")]
 public class Texture : Asset, IAssetLoader
 {
-    public static Task<Asset?> LoadAssetAsync(Project project, AssetDefinition definition)
+    public static Asset? LoadAsset(Project project, AssetDefinition definition, bool immediateEnterScope)
     {
         try
         {
@@ -13,19 +14,21 @@ public class Texture : Asset, IAssetLoader
             if (!File.Exists(path))
             {
                 Console.WriteLine($"Error loading texture asset ({definition.Key}): Data file at \"${path}\" does not exist.");
-                return Task.FromResult<Asset?>(null);
+                return null;
             }
 
             var format = definition.Properties?["format"]?.GetValue<uint?>() ?? 0x93B0; // COMPRESSED_RGBA_ASTC_4x4_KHR
             var width = definition.Properties!["width"]!.GetValue<int>();
             var height = definition.Properties!["height"]!.GetValue<int>();
             
-            return Task.FromResult<Asset?>(new Texture(definition.Type, definition.Key, path, format, width, height));
+            var texture = new Texture(project.Database, definition.Type, definition.Key, path, format, width, height);
+            if (immediateEnterScope) texture.EnterScope();
+            return texture;
         }
         catch (Exception e)
         {
             Console.WriteLine($"Error loading texture asset ({definition.Key}): {e}");
-            return Task.FromResult<Asset?>(null);
+            return null;
         }
     }
 
@@ -34,7 +37,7 @@ public class Texture : Asset, IAssetLoader
     private readonly int _width;
     private readonly int _height;
 
-    private Texture(string type, Guid key, string path, uint internalFormat, int width, int height) : base(type, key)
+    private Texture(AssetDatabase database, string type, Guid key, string path, uint internalFormat, int width, int height) : base(database, type, key)
     {
         _path = path;
         _internalFormat = internalFormat;
@@ -44,7 +47,7 @@ public class Texture : Asset, IAssetLoader
 
     private uint _texture;
 
-    public override void EnterScope()
+    protected override void EnterScope()
     {
         var data = File.ReadAllBytes(_path);
         
@@ -65,7 +68,7 @@ public class Texture : Asset, IAssetLoader
         GL.BindTexture(GL.TEXTURE_2D, 0);
     }
 
-    public override void ExitScope()
+    protected override void ExitScope()
     {
         GL.DeleteTextures(1, new []{_texture});
         _texture = 0;

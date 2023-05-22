@@ -1,16 +1,17 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 using Nebula.Graphics;
 
 namespace Nebula.Core;
 
 public static unsafe class Engine
 {
-    public static Node? RootNode { get; private set; }
+    public static Node? RootNode { get; set; }
 
     public static EngineInformation EngineInfo { get; private set; } = null!;
     public static WindowInformation WindowInfo { get; private set; } = null!;
+
+    private static void* _window;
     
     #region Callbacks
     
@@ -27,7 +28,7 @@ public static unsafe class Engine
     
     #endregion
 
-    public static void Run()
+    public static void Init()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
@@ -58,20 +59,20 @@ public static unsafe class Engine
             Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
         }
         Glfw.WindowHint(Glfw.SAMPLES, 4);
-        var window = Glfw.CreateWindow(1024, 768, "Nebula.Core C#", null, null);
-        if (window == null)
+        _window = Glfw.CreateWindow(1024, 768, "Nebula.Core C#", null, null);
+        if (_window == null)
         {
             Console.WriteLine("Failed to create GLFW window");
             Glfw.Terminate();
             return;
         }
         
-        Glfw.MakeContextCurrent(window);
+        Glfw.MakeContextCurrent(_window);
         
-        Glfw.SetFramebufferSizeCallback(window, GlfwFramebufferSizeCallback);
+        Glfw.SetFramebufferSizeCallback(_window, GlfwFramebufferSizeCallback);
 
         EngineInfo = EngineInformation.FromCurrent();
-        EngineInfo.Print();
+        //EngineInfo.Print();
 
         WindowInfo = new WindowInformation((1024, 768));
         GL.Viewport(0, 0, 1024, 768);
@@ -84,19 +85,24 @@ public static unsafe class Engine
         GL.ClearColor(0.0f, 1.0f, 0.0f, 1.0f);
         GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
         
-        Input.Setup(window);
+        Input.Setup(_window);
         // Start debugger
+    }
 
+    public static void Loop()
+    {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
-        while (!Glfw.WindowShouldClose(window))
+        while (!Glfw.WindowShouldClose(_window))
         {
             var inputState = Input.GetState();
-            if (inputState.IsKeyPressed((int)Key.Escape)) Input.UnlockCursor(window);
+            if (inputState.IsKeyPressed((int)Key.Escape)) Input.UnlockCursor(_window);
             
             var timeDelta = stopwatch.Elapsed.TotalSeconds;
             stopwatch.Restart();
+            
+            GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
             if (RootNode != null)
             {
@@ -104,11 +110,18 @@ public static unsafe class Engine
                 Renderer.Frame(frameArgs);
             }
 
+#if DEBUG
+            GL.CheckError();
+#endif
+
             Glfw.PollEvents();
-            Glfw.SwapBuffers(window);
+            Glfw.SwapBuffers(_window);
         }
-        
-        Glfw.DestroyWindow(window);
+    }
+
+    public static void Destroy()
+    {
+        Glfw.DestroyWindow(_window);
         Glfw.Terminate();
     }
 }
@@ -137,7 +150,6 @@ public class EngineInformation
             GL.GetString(GL.VERSION),
             GL.GetString(GL.RENDERER)
             );
-        
     }
 
     public void Print()

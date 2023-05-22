@@ -4,8 +4,12 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Configurations>Debug;Release;Debug-Unix-arm64</Configurations>
+        <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Nebula.Core\Nebula.Core.csproj" />
+    </ItemGroup>
 
 </Project>

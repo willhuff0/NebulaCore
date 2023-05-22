@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace Nebula.Core;
 
 public abstract class Node
@@ -49,9 +51,9 @@ public abstract class Node
         OnEndFrame(args);
     }
 
-    internal List<Guid> _gatherDependencies() => _children.Aggregate(new List<Guid>(), (list, node) => list.Concat(node._gatherDependencies()).ToList()).Concat(GatherDependencies()).ToList();
+    internal HashSet<Asset> _gatherDependencies() => _children.Aggregate(new HashSet<Asset>(), (list, node) => list.Concat(node._gatherDependencies()).ToHashSet()).Concat(GatherDependencies()).ToHashSet();
 
-    protected abstract List<Guid> GatherDependencies();
+    protected abstract HashSet<Asset> GatherDependencies();
 
     protected virtual void OnBeginFrame(FrameArgs args) { }
 

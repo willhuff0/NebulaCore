@@ -21,15 +21,17 @@ public class FrameArgs
 
     public readonly (int width, int height) Size;
     public double Aspect => (double)Size.width / (double)Size.height;
-    
+
+    public readonly double TimeTotal;
     public readonly double TimeDelta;
 
     public readonly InputState Input;
 
-    public FrameArgs(Node root, (int width, int height) size, double timeDelta, InputState input)
+    public FrameArgs(Node root, (int width, int height) size, double timeTotal, double timeDelta, InputState input)
     {
         Root = root;
         Size = size;
+        TimeTotal = timeTotal;
         TimeDelta = timeDelta;
         Input = input;
     }

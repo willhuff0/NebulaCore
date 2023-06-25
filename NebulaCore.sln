@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Graphics", "Nebula.G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Engine", "Nebula.Engine\Nebula.Engine.csproj", "{A4678592-B27E-45F4-B26B-4F9059E688EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Editor", "Nebula.Editor\Nebula.Editor.csproj", "{383F28A3-7E0D-4837-9D5B-535103666953}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Core", "Nebula.Core\Nebula.Core.csproj", "{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Math", "Nebula.Math\Nebula.Math.csproj", "{7CB23AEE-328C-4718-A6CD-AD54EF43ED7F}"
@@ -15,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.BuiltIn", "Nebula.BuiltIn\Nebula.BuiltIn.csproj", "{AA5D717F-B193-423F-B7E3-6CE1C3BE7E56}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Tests", "Nebula.Tests\Nebula.Tests.csproj", "{5D4F31D7-E13A-4F7D-A2BB-BBED7525C6C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Editor", "Nebula.Editor\Nebula.Editor.csproj", "{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,14 +40,6 @@ Global
 		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Release-Win-x64|Any CPU.Build.0 = Release|Any CPU
 		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug-Unix-arm64|Any CPU
 		{A4678592-B27E-45F4-B26B-4F9059E688EC}.Debug-Unix-arm64|Any CPU.Build.0 = Debug-Unix-arm64|Any CPU
-		{383F28A3-7E0D-4837-9D5B-535103666953}.Release-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
-		{383F28A3-7E0D-4837-9D5B-535103666953}.Release-Win-x64|Any CPU.Build.0 = Debug|Any CPU
-		{383F28A3-7E0D-4837-9D5B-535103666953}.Debug-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
-		{383F28A3-7E0D-4837-9D5B-535103666953}.Debug-Win-x64|Any CPU.Build.0 = Debug|Any CPU
-		{383F28A3-7E0D-4837-9D5B-535103666953}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
-		{383F28A3-7E0D-4837-9D5B-535103666953}.Release-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
-		{383F28A3-7E0D-4837-9D5B-535103666953}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug-Unix-arm64|Any CPU
-		{383F28A3-7E0D-4837-9D5B-535103666953}.Debug-Unix-arm64|Any CPU.Build.0 = Debug-Unix-arm64|Any CPU
 		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug-Unix-arm64|Any CPU
 		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Debug-Unix-arm64|Any CPU.Build.0 = Debug-Unix-arm64|Any CPU
 		{2824711A-C58C-4A0B-86BF-59CCCEEBE9F8}.Debug-Win-x64|Any CPU.ActiveCfg = Debug-Win-x64|Any CPU
@@ -88,5 +80,13 @@ Global
 		{5D4F31D7-E13A-4F7D-A2BB-BBED7525C6C2}.Release-Unix-arm64|Any CPU.Build.0 = Release-Unix-arm64|Any CPU
 		{5D4F31D7-E13A-4F7D-A2BB-BBED7525C6C2}.Release-Win-x64|Any CPU.ActiveCfg = Release-Win-x64|Any CPU
 		{5D4F31D7-E13A-4F7D-A2BB-BBED7525C6C2}.Release-Win-x64|Any CPU.Build.0 = Release-Win-x64|Any CPU
+		{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}.Release-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}.Release-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}.Debug-Win-x64|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}.Debug-Win-x64|Any CPU.Build.0 = Debug|Any CPU
+		{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}.Debug-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}.Debug-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
+		{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}.Release-Unix-arm64|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B84A616-9C0E-467B-84A4-C6D8FB4A8D14}.Release-Unix-arm64|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

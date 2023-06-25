@@ -3,15 +3,19 @@ precision highp float;
 
 out vec4 FragColor;
 
-in vec2 v_texCoord;
-in vec3 v_worldPos;
-in vec3 v_normal;
+layout(location = 0) in vec2 v_texCoord;
+layout(location = 1) in vec3 v_worldPos;
+layout(location = 2) in vec3 v_normal;
 
 layout(binding = 0) uniform sampler2D nebula_texture_albedo;
 layout(binding = 1) uniform sampler2D nebula_texture_metallicRoughnessOcclusion;
 layout(binding = 2) uniform sampler2D nebula_texture_normal;
 
 layout(location = 2) uniform vec3 nebula_worldViewPos;
+
+layout(location = 3) uniform vec3 nebula_directionalLight_direction;
+layout(location = 4) uniform vec3 nebula_directionalLight_color;
+layout(location = 5) uniform float nebula_directionalLight_illuminance;
 
 const float PI = 3.14159265359;
 
@@ -53,5 +57,37 @@ float diffuse_lambert() {
 //------------------
 
 void main() {
-    FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    vec3 baseColor = vec3(1.0); //texture(nebula_texture_albedo, v_texCoord).rgb;
+
+    vec3 inMetallicRoughtnessOcclusion = texture(nebula_texture_metallicRoughnessOcclusion, v_texCoord).rgb;
+    float metallic = 0.5; //inMetallicRoughtnessOcclusion.r;
+    float roughness = 0.5; //inMetallicRoughtnessOcclusion.g * inMetallicRoughtnessOcclusion.g;
+    float occlusion = 1.0; //inMetallicRoughtnessOcclusion.b;
+
+    vec3 diffuseColor = (1.0 - metallic) * baseColor;
+    vec3 f0 = 0.16 * 1.0 * 1.0 * (1.0 - metallic) + baseColor * metallic;
+
+    vec3 n = v_normal;
+    vec3 v = normalize(v_worldPos - nebula_worldViewPos);
+    vec3 l = normalize(-nebula_directionalLight_direction);
+
+    vec3 h = normalize(v + l);
+
+    float NoV = abs(dot(n, v)) + 1e-5;
+    float NoL = clamp(dot(n, l), 0.0, 1.0);
+    float NoH = clamp(dot(n, h), 0.0, 1.0);
+    float LoH = clamp(dot(l, h), 0.0, 1.0);
+
+    float D = specular_distribution(NoH, roughness);
+    vec3 F = specular_fresnel(LoH, f0);
+    float V = specular_visibility(NoV, NoL, roughness);
+
+    vec3 specular = (D * V) * F;
+    vec3 diffuse = diffuseColor * diffuse_lambert();
+    vec3 brdf = diffuse + specular;
+
+    float illuminance = nebula_directionalLight_illuminance * NoL;
+    vec3 luminance = brdf * illuminance;
+
+    FragColor = vec4(luminance, 1.0);
 }

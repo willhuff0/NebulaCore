@@ -21,12 +21,14 @@ public class RenderedNode : Node
     {
         if (!args.IsForShadows) Material.Bind();
         
-        var projection = Matrix4.Perspective(args.FrameArgs.Aspect, 80.0 * (double.Pi / 180.0), 0.1, 100.0);
-        var view = Matrix4.Identity();
-        var transform = Matrix4.Translation(0.0, 0.0, -3.0);
+        var projection = Matrix4.Perspective(args.FrameArgs.Aspect, 25.0 * (double.Pi / 180.0), 0.1, 100.0);
+        var view = Matrix4.Translation(0.0, 0.0, -10.0);
+
+        Material.Shader.SetUniform(0, projection * view); // ViewProjectionMatrix
         
-        Material.Shader.SetUniform(0, projection * view);
-        Material.Shader.SetUniform(1, transform);
+        var transform = Matrix4.YRotation(args.FrameArgs.TimeTotal * (45.0 * (double.Pi / 180.0)));
+
+        Material.Shader.SetUniform(1, transform); // TransformMatrix
         
         Mesh.Draw();
     }

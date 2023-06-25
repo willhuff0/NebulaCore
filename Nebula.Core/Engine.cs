@@ -58,7 +58,7 @@ public static unsafe class Engine
         {
             Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
         }
-        Glfw.WindowHint(Glfw.SAMPLES, 4);
+        Glfw.WindowHint(Glfw.SAMPLES, 8);
         _window = Glfw.CreateWindow(1024, 768, "Nebula.Core C#", null, null);
         if (_window == null)
         {
@@ -79,8 +79,8 @@ public static unsafe class Engine
         
         GL.Enable(GL.DEPTH_TEST);
         
-        GL.Enable(GL.CULL_FACE);
-        GL.CullFace(GL.BACK);
+        //GL.Enable(GL.CULL_FACE);
+        //GL.CullFace(GL.BACK);
         
         GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
@@ -94,19 +94,21 @@ public static unsafe class Engine
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
+        double lastTimeTotal = 0.0;
         while (!Glfw.WindowShouldClose(_window))
         {
             var inputState = Input.GetState();
             if (inputState.IsKeyPressed((int)Key.Escape)) Input.UnlockCursor(_window);
             
-            var timeDelta = stopwatch.Elapsed.TotalSeconds;
-            stopwatch.Restart();
+            var timeTotal = stopwatch.Elapsed.TotalSeconds;
+            var timeDelta = timeTotal - lastTimeTotal;
+            lastTimeTotal = timeTotal;
             
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
             if (RootNode != null)
             {
-                var frameArgs = new FrameArgs(RootNode, WindowInfo.Size, timeDelta, inputState);
+                var frameArgs = new FrameArgs(RootNode, WindowInfo.Size,  timeTotal, timeDelta, inputState);
                 Renderer.Frame(frameArgs);
             }
 
@@ -164,6 +166,7 @@ public class EngineInformation
 public class WindowInformation
 {
     public readonly (int width, int height) Size;
+    public double Aspect => (double)Size.width / (double)Size.height;
     
     public WindowInformation((int width, int height) size)
     {

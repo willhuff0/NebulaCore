@@ -4,8 +4,8 @@ namespace Nebula.Core;
 
 public class Project
 {
-    private const string APP_DIRECTORY = "data";
-    private const string USER_DATA_DIRECTORY = "user";
+    public const string APP_DIRECTORY = "data";
+    public const string USER_DATA_DIRECTORY = "user";
     
     public string Name { get; private set; }
     

@@ -114,6 +114,13 @@ public class Matrix4<T> where T : INumber<T>
         V23 = m1.V03 * m2.V20 + m1.V13 * m2.V21 + m1.V23 * m2.V22 + m1.V33 * m2.V23,
         V33 = m1.V03 * m2.V30 + m1.V13 * m2.V31 + m1.V23 * m2.V32 + m1.V33 * m2.V33,
     };
+    
+    public static Matrix4<TT> YRotation<TT>(TT theta) where TT : INumber<TT>, IFloatingPoint<TT>, ITrigonometricFunctions<TT> => new(
+        TT.Cos(theta), TT.CreateTruncating(0.0), TT.Sin(theta), TT.CreateTruncating(0.0),
+        TT.CreateTruncating(0.0), TT.CreateTruncating(1.0), TT.CreateTruncating(0.0), TT.CreateTruncating(0.0),
+        -TT.Sin(theta), TT.CreateTruncating(0.0), TT.Cos(theta), TT.CreateTruncating(0.0),
+        TT.CreateTruncating(0.0), TT.CreateTruncating(0.0), TT.CreateTruncating(0.0), TT.CreateTruncating(1.0)
+    );
 }
 
 public class Matrix4 : Matrix4<double> {
@@ -126,7 +133,7 @@ public class Matrix4 : Matrix4<double> {
     }
 }
 
-public static class Matrix4DoubleExtensions
+public static class Matrix4Extensions
 {
     public static float[] ToColumnMajorFloatArray(this Matrix4<double> m) => new[] { (float)m.V00, (float)m.V01, (float)m.V02, (float)m.V03, (float)m.V10, (float)m.V11, (float)m.V12, (float)m.V13, (float)m.V20, (float)m.V21, (float)m.V22, (float)m.V23, (float)m.V30, (float)m.V31, (float)m.V32, (float)m.V33 };
     public static float[] ToRowMajorFloatArray(this Matrix4<double> m) => new[] { (float)m.V00, (float)m.V10, (float)m.V20, (float)m.V30, (float)m.V01, (float)m.V11, (float)m.V21, (float)m.V31, (float)m.V02, (float)m.V12, (float)m.V22, (float)m.V32, (float)m.V03, (float)m.V13, (float)m.V23, (float)m.V33 };

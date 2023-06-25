@@ -1,6 +1,8 @@
-﻿namespace Nebula.Math;
+﻿using System.Numerics;
 
-public class Vector2<T>
+namespace Nebula.Math;
+
+public class Vector2<T> where T : INumber<T>
 {
     public T X;
     public T Y;
@@ -14,7 +16,7 @@ public class Vector2<T>
     public T[] ToArray() => new[] { X, Y };
 }
 
-public class Vector3<T>
+public class Vector3<T> where T : INumber<T>
 {
     public T X;
     public T Y;
@@ -26,11 +28,29 @@ public class Vector3<T>
         Y = y;
         Z = z;
     }
-    
+
+    public Vector3(Vector3<T> copy)
+    {
+        X = copy.X;
+        Y = copy.Y;
+        Z = copy.Z;
+    }
+
     public T[] ToArray() => new[] { X, Y, Z };
+
+    public static Vector3<T> operator /(Vector3<T> v1, T v2) => new(v1.X / v2, v1.Y / v2, v1.Z / v2);
+
+    public override string ToString() => $"({X},{Y},{Z})";
 }
 
-public class Vector4<T>
+public static class Vector3Extensions
+{
+    public static T Length<T>(this Vector3<T> v) where T : INumber<T>, IRootFunctions<T> => T.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z);
+
+    public static Vector3<T> Normalized<T>(this Vector3<T> v) where T : INumber<T>, IRootFunctions<T> => v / v.Length();
+}
+
+public class Vector4<T> where T : INumber<T>
 {
     public T X;
     public T Y;

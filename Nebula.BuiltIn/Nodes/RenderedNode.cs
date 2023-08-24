@@ -1,11 +1,21 @@
-﻿using Nebula.Core;
+﻿using System.Text.Json.Nodes;
+using Nebula.Core;
 using Nebula.BuiltIn.Assets;
 using Nebula.Math;
 
 namespace Nebula.BuiltIn.Nodes;
 
-public class RenderedNode : Node
+[NodeLoader("rendered")]
+public class RenderedNode : Node, INodeLoader
 {
+    public static Node? LoadNode(Project project, string name, JsonNode? definition)
+    {
+        var mesh = project.Database.GetLoadedAsset<Mesh>(definition!["mesh"]!.GetValue<string>())!;
+        var material = project.Database.GetLoadedAsset<Material>(definition!["material"]!.GetValue<string>())!;
+
+        return new RenderedNode(null, name, mesh, material);
+    }
+    
     public Mesh Mesh;
     public Material Material;
     

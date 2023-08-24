@@ -5,7 +5,7 @@ using Nebula.Math;
 
 Engine.Init();
 
-var project = new Project(@"C:\Users\wehuf\home\dev\NebulaCore\TestProject\Test Project.neb");
+var project = new Project(@"C:\Users\wehuf\RiderProjects\NebulaCore\TestProject\Test Project.neb");
 
 project.Database.LoadCollection("bc238247-94dd-4eef-979d-558ef4e555bd", true);
 

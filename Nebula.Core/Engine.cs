@@ -36,7 +36,8 @@ public static unsafe class Engine
         } 
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
+            //Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_METAL);
+            Glfw.InitHint(Glfw.ANGLE_PLATFORM_TYPE, Glfw.ANGLE_PLATFORM_TYPE_OPENGL);
         }
         
         if (!Glfw.Init())
@@ -56,7 +57,8 @@ public static unsafe class Engine
         } 
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
+            //Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 0);
+            Glfw.WindowHint(Glfw.CONTEXT_VERSION_MINOR, 1);
         }
         Glfw.WindowHint(Glfw.SAMPLES, 8);
         _window = Glfw.CreateWindow(1024, 768, "Nebula.Core C#", null, null);

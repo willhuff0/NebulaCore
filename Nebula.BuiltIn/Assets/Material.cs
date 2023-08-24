@@ -1,6 +1,4 @@
 ﻿using Nebula.Core;
-using Nebula.Graphics;
-using Nebula.Math;
 
 namespace Nebula.BuiltIn.Assets;
 

@@ -36,6 +36,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Nebula.BuiltIn\Nebula.BuiltIn.csproj" />
       <ProjectReference Include="..\Nebula.Core\Nebula.Core.csproj" />
+      <ProjectReference Include="..\Nebula.Editor\Nebula.Editor.csproj" />
     </ItemGroup>
 
     <ItemGroup>

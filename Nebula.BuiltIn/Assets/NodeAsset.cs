@@ -63,17 +63,17 @@ public class NodeAsset : Asset, IAssetLoader
         _referenceIntermediary = null;
     }
 
-    public Node? Instantiate()
+    public TNode? Instantiate<TNode>() where TNode : Node
     {
         var root = NodeLoaderDatabase.Loaders[_class](Database.AssociatedProject, _name, _properties);
         if (root == null) return null;
 
         foreach (var child in _children)
         {
-            var node = child.Instantiate();
+            var node = child.Instantiate<Node>();
             if (node != null) root.AttachChild(node);
         }
 
-        return root;
+        return (TNode)root;
     }
 }

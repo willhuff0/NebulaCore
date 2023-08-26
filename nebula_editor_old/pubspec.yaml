@@ -11,6 +11,7 @@ dependencies:
   file_picker: ^5.2.7
   flutter:
     sdk: flutter
+  flutter_native_view: ^0.0.2
   fuzzywuzzy: ^0.2.0
   http: ^0.13.5
   json_rpc_2: ^3.0.2

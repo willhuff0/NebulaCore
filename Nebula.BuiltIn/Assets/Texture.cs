@@ -17,7 +17,7 @@ public class Texture : Asset, IAssetLoader
                 return null;
             }
 
-            var format = definition.Properties?["format"]?.GetValue<uint?>() ?? 0x93B0; // COMPRESSED_RGBA_ASTC_4x4_KHR
+            var format = definition.Properties?["format"]?.GetValue<uint?>() ?? 0x93B4; // COMPRESSED_RGBA_ASTC_6x6_KHR
             var width = definition.Properties!["width"]!.GetValue<int>();
             var height = definition.Properties!["height"]!.GetValue<int>();
             

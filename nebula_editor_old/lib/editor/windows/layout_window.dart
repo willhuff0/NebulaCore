@@ -33,6 +33,6 @@ class _EditorWindowLayoutState extends State<EditorWindowLayout> {
     if (scene == null) {
       return Center(child: Text('No scene loaded'));
     }
-    return scene.
+    return Container();
   }
 }

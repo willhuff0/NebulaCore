@@ -70,6 +70,8 @@ public class Vector4<T> where T : INumber<T>
 
 public class Vector2 : Vector2<double>
 {
+    public Vector2() : base(0.0, 0.0) { }
+    
     public Vector2(double x, double y) : base(x, y)
     {
         
@@ -78,6 +80,8 @@ public class Vector2 : Vector2<double>
 
 public class Vector3 : Vector3<double>
 {
+    public Vector3() : base(0.0, 0.0, 0.0) { }
+    
     public Vector3(double x, double y, double z) : base(x, y, z)
     {
         
@@ -86,6 +90,8 @@ public class Vector3 : Vector3<double>
 
 public class Vector4 : Vector4<double>
 {
+    public Vector4() : base(0.0, 0.0, 0.0, 0.0) { }
+    
     public Vector4(double x, double y, double z, double w) : base(x, y, z, w)
     {
         

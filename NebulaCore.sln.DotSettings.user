@@ -2,9 +2,12 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cwehuf_005Chome_005Cdev_005CNebulaCore_005Cdeps_005CAssimp_002ENet_005CAssimpNet_002Esln/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cwehuf_005Chome_005Cdev_005CNebulaCore_005Cdeps_005CAssimp_002ENet_005CAssimpNet_005Cbin_005CDebug_005Cnet7_002E0_005CStirlingLabs_002EAssimp_002ENet_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cwehuf_005Chome_005Cdev_005CNebulaCore_005Cdeps_005CAssimp_002ENet_005CAssimpNet_005Cobj_005CDebug_005Cnet7_002E0_005CStirlingLabs_002EAssimp_002ENet_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cwehuf_005CRiderProjects_005CNebulaCore_005Cdeps_005CglTF_002DCSharp_002DLoader_005CglTFLoader_005Cbin_005CDebug_005CglTF2Loader_002E1_002E1_002E4_002Dalpha_002Enupkg/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cwehuf_005CRiderProjects_005CNebulaCore_005Cdeps_005CglTF_002DCSharp_002DLoader_005CglTFLoader_005Cbin_005CDebug_005Cnetstandard1_002E3_005CglTFLoader_002Edll/@EntryIndexedValue">True</s:Boolean>
 	
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\wehuf\home\dev\NebulaCore\deps\Assimp.Net\AssimpNet\bin\Debug\net7.0\StirlingLabs.Assimp.Net.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\wehuf\RiderProjects\NebulaCore\deps\glTF-CSharp-Loader\glTFLoader\bin\Debug\netstandard1.3\glTFLoader.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:Boolean x:Key="/Default/UnloadedProject/UnloadedProjects/=a4678592_002Db27e_002D45f4_002Db26b_002D4f9059e688ec_0023Nebula_002EEngine/@EntryIndexedValue">True</s:Boolean>
 	

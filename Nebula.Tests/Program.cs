@@ -4,7 +4,7 @@ using Nebula.Core;
 using Nebula.Editor.Services;
 using Nebula.Math;
 
-var model = ModelService.DecodeModel(@"C:\Users\wehuf\Downloads\Avocado.glb", @"C:\Users\wehuf\RiderProjects\NebulaCore\TestProject\assets");
+var model = ModelService_OLD.DecodeModel(@"C:\Users\wehuf\Downloads\Avocado.glb", @"C:\Users\wehuf\RiderProjects\NebulaCore\TestProject\assets");
 //File.WriteAllBytes(@"C:\Users\wehuf\RiderProjects\NebulaCore\TestProject\data\meshes\4fae96ea-cedd-446c-9fbb-3e397705ee52", model.);
 
 Console.WriteLine(model);

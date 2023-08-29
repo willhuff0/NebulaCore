@@ -121,6 +121,197 @@ public class Matrix4<T> where T : INumber<T>
         -TT.Sin(theta), TT.CreateTruncating(0.0), TT.Cos(theta), TT.CreateTruncating(0.0),
         TT.CreateTruncating(0.0), TT.CreateTruncating(0.0), TT.CreateTruncating(0.0), TT.CreateTruncating(1.0)
     );
+    
+    /// <summary>Attempts to extract the scale, translation, and rotation components from the given scale, rotation, or translation matrix. The return value indicates whether the operation succeeded.</summary>
+        /// <param name="matrix">The source matrix.</param>
+        /// <param name="scale">When this method returns, contains the scaling component of the transformation matrix if the operation succeeded.</param>
+        /// <param name="rotation">When this method returns, contains the rotation component of the transformation matrix if the operation succeeded.</param>
+        /// <param name="translation">When the method returns, contains the translation component of the transformation matrix if the operation succeeded.</param>
+        /// <returns><see langword="true" /> if <paramref name="matrix" /> was decomposed successfully; otherwise,  <see langword="false" />.</returns>
+        public static bool Decompose(Matrix4x4 matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation)
+        {
+            bool result = true;
+
+            var scaleBase = new Vector3();
+                    float det;
+
+                    VectorBasis vectorBasis;
+                    Vector3** pVectorBasis = (Vector3**)&vectorBasis;
+
+                    Matrix4x4 matTemp = Identity;
+                    CanonicalBasis canonicalBasis = default;
+                    Vector3* pCanonicalBasis = &canonicalBasis.Row0;
+
+                    canonicalBasis.Row0 = new Vector3(1.0f, 0.0f, 0.0f);
+                    canonicalBasis.Row1 = new Vector3(0.0f, 1.0f, 0.0f);
+                    canonicalBasis.Row2 = new Vector3(0.0f, 0.0f, 1.0f);
+
+                    translation = new Vector3(
+                        matrix.M41,
+                        matrix.M42,
+                        matrix.M43);
+
+                    pVectorBasis[0] = (Vector3*)&matTemp.M11;
+                    pVectorBasis[1] = (Vector3*)&matTemp.M21;
+                    pVectorBasis[2] = (Vector3*)&matTemp.M31;
+
+                    *(pVectorBasis[0]) = new Vector3(matrix.M11, matrix.M12, matrix.M13);
+                    *(pVectorBasis[1]) = new Vector3(matrix.M21, matrix.M22, matrix.M23);
+                    *(pVectorBasis[2]) = new Vector3(matrix.M31, matrix.M32, matrix.M33);
+
+                    scale.X = pVectorBasis[0]->Length();
+                    scale.Y = pVectorBasis[1]->Length();
+                    scale.Z = pVectorBasis[2]->Length();
+
+                    uint a, b, c;
+                    #region Ranking
+                    float x = pfScales[0], y = pfScales[1], z = pfScales[2];
+                    if (x < y)
+                    {
+                        if (y < z)
+                        {
+                            a = 2;
+                            b = 1;
+                            c = 0;
+                        }
+                        else
+                        {
+                            a = 1;
+
+                            if (x < z)
+                            {
+                                b = 2;
+                                c = 0;
+                            }
+                            else
+                            {
+                                b = 0;
+                                c = 2;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (x < z)
+                        {
+                            a = 2;
+                            b = 0;
+                            c = 1;
+                        }
+                        else
+                        {
+                            a = 0;
+
+                            if (y < z)
+                            {
+                                b = 2;
+                                c = 1;
+                            }
+                            else
+                            {
+                                b = 1;
+                                c = 2;
+                            }
+                        }
+                    }
+                    #endregion
+
+                    if (pfScales[a] < DecomposeEpsilon)
+                    {
+                        *(pVectorBasis[a]) = pCanonicalBasis[a];
+                    }
+
+                    *pVectorBasis[a] = Vector3.Normalize(*pVectorBasis[a]);
+
+                    if (pfScales[b] < DecomposeEpsilon)
+                    {
+                        uint cc;
+                        float fAbsX, fAbsY, fAbsZ;
+
+                        fAbsX = MathF.Abs(pVectorBasis[a]->X);
+                        fAbsY = MathF.Abs(pVectorBasis[a]->Y);
+                        fAbsZ = MathF.Abs(pVectorBasis[a]->Z);
+
+                        #region Ranking
+                        if (fAbsX < fAbsY)
+                        {
+                            if (fAbsY < fAbsZ)
+                            {
+                                cc = 0;
+                            }
+                            else
+                            {
+                                if (fAbsX < fAbsZ)
+                                {
+                                    cc = 0;
+                                }
+                                else
+                                {
+                                    cc = 2;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (fAbsX < fAbsZ)
+                            {
+                                cc = 1;
+                            }
+                            else
+                            {
+                                if (fAbsY < fAbsZ)
+                                {
+                                    cc = 1;
+                                }
+                                else
+                                {
+                                    cc = 2;
+                                }
+                            }
+                        }
+                        #endregion
+
+                        *pVectorBasis[b] = Vector3.Cross(*pVectorBasis[a], *(pCanonicalBasis + cc));
+                    }
+
+                    *pVectorBasis[b] = Vector3.Normalize(*pVectorBasis[b]);
+
+                    if (pfScales[c] < DecomposeEpsilon)
+                    {
+                        *pVectorBasis[c] = Vector3.Cross(*pVectorBasis[a], *pVectorBasis[b]);
+                    }
+
+                    *pVectorBasis[c] = Vector3.Normalize(*pVectorBasis[c]);
+
+                    det = matTemp.GetDeterminant();
+
+                    // use Kramer's rule to check for handedness of coordinate system
+                    if (det < 0.0f)
+                    {
+                        // switch coordinate system by negating the scale and inverting the basis vector on the x-axis
+                        pfScales[a] = -pfScales[a];
+                        *pVectorBasis[a] = -(*pVectorBasis[a]);
+
+                        det = -det;
+                    }
+
+                    det -= 1.0f;
+                    det *= det;
+
+                    if ((DecomposeEpsilon < det))
+                    {
+                        // Non-SRT matrix encountered
+                        rotation = Quaternion.Identity;
+                        result = false;
+                    }
+                    else
+                    {
+                        // generate the quaternion from the matrix
+                        rotation = Quaternion.CreateFromRotationMatrix(matTemp);
+                    }
+
+                    return result;
+        }
 }
 
 public class Matrix4 : Matrix4<double> {

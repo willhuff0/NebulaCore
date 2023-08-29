@@ -7,6 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Reference Include="glTFLoader">
+        <HintPath>..\deps\glTF-CSharp-Loader\glTFLoader\bin\Debug\netstandard1.3\glTFLoader.dll</HintPath>
+      </Reference>
       <Reference Include="StirlingLabs.Assimp.Net">
         <HintPath>..\deps\Assimp.Net\AssimpNet\bin\Debug\net7.0\StirlingLabs.Assimp.Net.dll</HintPath>
       </Reference>

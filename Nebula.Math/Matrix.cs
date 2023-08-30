@@ -121,6 +121,11 @@ public class Matrix4<T> where T : INumber<T>
         -TT.Sin(theta), TT.CreateTruncating(0.0), TT.Cos(theta), TT.CreateTruncating(0.0),
         TT.CreateTruncating(0.0), TT.CreateTruncating(0.0), TT.CreateTruncating(0.0), TT.CreateTruncating(1.0)
     );
+
+    public bool Decompose(out Vector3 scale, out Quaternion rotation, out Vector3 translation)
+    {
+        
+    }
     
     /// <summary>Attempts to extract the scale, translation, and rotation components from the given scale, rotation, or translation matrix. The return value indicates whether the operation succeeded.</summary>
         /// <param name="matrix">The source matrix.</param>
@@ -128,7 +133,7 @@ public class Matrix4<T> where T : INumber<T>
         /// <param name="rotation">When this method returns, contains the rotation component of the transformation matrix if the operation succeeded.</param>
         /// <param name="translation">When the method returns, contains the translation component of the transformation matrix if the operation succeeded.</param>
         /// <returns><see langword="true" /> if <paramref name="matrix" /> was decomposed successfully; otherwise,  <see langword="false" />.</returns>
-        public static bool Decompose(Matrix4x4 matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation)
+        public static bool DDecompose(Matrix4x4 matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation)
         {
             bool result = true;
 

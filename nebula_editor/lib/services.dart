@@ -1,1 +1,1 @@
-export 'services/model_service.dart';
+export 'services/texture_service.dart';
